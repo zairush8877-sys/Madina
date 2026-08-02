@@ -1,0 +1,51 @@
+---
+import { site } from '../content/site';
+import { withBase } from '../lib/url';
+
+// Video lives in `public/` (not `src/assets/`) so the section can stay in the
+// codebase while the file itself is still missing — no build-time import to fail.
+const videoSrc = withBase(site.video.src);
+const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
+---
+
+<section class="section" id="video">
+  <div class="wrap">
+    <header class="video__head">
+      <p class="eyebrow">{site.video.eyebrow}</p>
+      <h2>{site.video.title}</h2>
+    </header>
+
+    <video
+      class="video__player"
+      src={videoSrc}
+      poster={posterSrc}
+      controls
+      playsinline
+      preload="none"
+    >
+      Ваш браузер не поддерживает воспроизведение видео.
+    </video>
+
+    {site.video.caption && <p class="video__caption">{site.video.caption}</p>}
+  </div>
+</section>
+
+<style>
+  .video__head {
+    max-width: 52rem;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+
+  .video__player {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: var(--ink);
+    object-fit: cover;
+  }
+
+  .video__caption {
+    margin-top: 1rem;
+    font-size: 0.92rem;
+    color: var(--ink-3);
+  }
+</style>

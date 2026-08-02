@@ -1,0 +1,34 @@
+---
+import { site } from '../content/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap site-footer__inner">
+    <p class="site-footer__brand">
+      {site.person.fullName} — {site.person.role.toLowerCase()}, {site.person.city}
+    </p>
+    <p class="site-footer__legal">© {year}. Все права защищены.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: 2rem;
+    font-size: 0.85rem;
+    color: var(--ink-3);
+  }
+
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 2rem;
+    justify-content: space-between;
+  }
+
+  .site-footer p {
+    margin: 0;
+  }
+</style>

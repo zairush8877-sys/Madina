@@ -1,0 +1,55 @@
+---
+import { site } from '../content/site';
+---
+
+<section class="section section--tint" id="approach">
+  <div class="wrap">
+    <header class="approach__head">
+      <p class="eyebrow">{site.approach.eyebrow}</p>
+      <h2>{site.approach.title}</h2>
+      <p class="lede">{site.approach.lede}</p>
+    </header>
+
+    <div class="approach__grid">
+      {
+        site.approach.items.map((item) => (
+          <article class="approach__item">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .approach__head {
+    max-width: 52rem;
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .approach__head h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .approach__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .approach__item {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--clay);
+  }
+
+  .approach__item h3 {
+    margin-bottom: 0.75rem;
+  }
+
+  .approach__item p {
+    color: var(--ink-2);
+    font-size: 0.97rem;
+  }
+</style>

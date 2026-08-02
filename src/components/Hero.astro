@@ -1,0 +1,114 @@
+---
+import { Picture } from 'astro:assets';
+import { site } from '../content/site';
+import heroPortrait from '../assets/photos/portrait-garden-01.jpg';
+
+const titleLines = site.hero.title.split('\n');
+---
+
+<section class="hero" id="top">
+  <div class="wrap hero__inner">
+    <div class="hero__text">
+      <p class="eyebrow">{site.hero.kicker}</p>
+      <h1>
+        {
+          titleLines.map((line, i) => (
+            <>
+              {i > 0 && <br />}
+              {line}
+            </>
+          ))
+        }
+      </h1>
+      <p class="lede hero__lede">{site.hero.lede}</p>
+      <div class="hero__actions">
+        <a
+          class="btn"
+          href={site.contacts.whatsappHref}
+          target="_blank"
+          rel="noopener"
+        >
+          {site.hero.primaryCta}
+        </a>
+        <a class="btn btn--ghost" href="#services">{site.hero.secondaryCta}</a>
+      </div>
+    </div>
+
+    <div class="hero__figure">
+      <Picture
+        src={heroPortrait}
+        alt={`${site.person.fullName} — ${site.person.role.toLowerCase()}`}
+        widths={[420, 700, 900]}
+        sizes="(max-width: 900px) 78vw, 38vw"
+        formats={['avif', 'webp']}
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 8vw, 6.5rem) clamp(3rem, 8vw, 6rem);
+    overflow: hidden;
+  }
+
+  .hero__inner {
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .hero__lede {
+    margin-top: 1.5rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 2.25rem;
+  }
+
+  .hero__figure {
+    position: relative;
+  }
+
+  /* Offset frame behind the portrait — a quiet designer's touch. */
+  .hero__figure::before {
+    content: '';
+    position: absolute;
+    inset: 1.5rem -1.5rem -1.5rem 1.5rem;
+    border: 1px solid var(--line);
+    background: var(--paper-2);
+    z-index: 0;
+  }
+
+  .hero__figure :global(img) {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: center 22%;
+  }
+
+  @media (max-width: 900px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .hero__figure {
+      order: -1;
+      max-width: 22rem;
+      margin-inline: auto;
+      width: 100%;
+    }
+
+    .hero__figure::before {
+      inset: 1rem -1rem -1rem 1rem;
+    }
+  }
+</style>

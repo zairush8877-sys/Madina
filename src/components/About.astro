@@ -1,0 +1,103 @@
+---
+import { Picture } from 'astro:assets';
+import { site } from '../content/site';
+import portraitA from '../assets/photos/portrait-evening-01.jpg';
+import portraitB from '../assets/photos/portrait-flowers-01.jpg';
+---
+
+<section class="section section--tint" id="about">
+  <div class="wrap about">
+    <div class="about__media">
+      <Picture
+        class="about__img about__img--a"
+        src={portraitA}
+        alt={`${site.person.fullName}`}
+        widths={[360, 620]}
+        sizes="(max-width: 900px) 45vw, 24vw"
+        formats={['avif', 'webp']}
+        loading="lazy"
+      />
+      <Picture
+        class="about__img about__img--b"
+        src={portraitB}
+        alt={`${site.person.fullName} — портрет`}
+        widths={[300, 520]}
+        sizes="(max-width: 900px) 38vw, 19vw"
+        formats={['avif', 'webp']}
+        loading="lazy"
+      />
+    </div>
+
+    <div class="about__text">
+      <p class="eyebrow">{site.about.eyebrow}</p>
+      <h2>{site.about.title}</h2>
+      <div class="about__body">
+        {site.about.paragraphs.map((p) => <p>{p}</p>)}
+      </div>
+      <blockquote class="about__quote">{site.about.quote}</blockquote>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .about__media {
+    position: relative;
+    padding-bottom: 4.5rem;
+  }
+
+  .about__img :global(img),
+  .about__img {
+    width: 100%;
+  }
+
+  .about__img--a :global(img) {
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  .about__img--b {
+    position: absolute;
+    right: -1rem;
+    bottom: 0;
+    width: 52%;
+    border: 6px solid var(--paper-2);
+  }
+
+  .about__img--b :global(img) {
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  .about__body {
+    margin-top: 1.75rem;
+    color: var(--ink-2);
+  }
+
+  .about__quote {
+    margin: 2rem 0 0;
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--clay);
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 1.05rem + 0.7vw, 1.6rem);
+    line-height: 1.4;
+    color: var(--ink);
+  }
+
+  @media (max-width: 900px) {
+    .about {
+      grid-template-columns: 1fr;
+    }
+
+    .about__media {
+      max-width: 26rem;
+      padding-bottom: 3.5rem;
+    }
+  }
+</style>

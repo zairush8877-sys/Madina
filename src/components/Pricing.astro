@@ -1,0 +1,104 @@
+---
+import { site } from '../content/site';
+---
+
+<section class="section" id="pricing">
+  <div class="wrap">
+    <header class="pricing__head">
+      <p class="eyebrow">{site.pricing.eyebrow}</p>
+      <h2>{site.pricing.title}</h2>
+    </header>
+
+    <div class="pricing__grid">
+      {
+        site.pricing.items.map((item) => (
+          <article class="price">
+            <h3 class="price__title">{item.title}</h3>
+            <p class="price__amount">
+              <span class="price__value">{item.price}</span>
+              {item.unit && <span class="price__unit">{item.unit}</span>}
+            </p>
+            <p class="price__note">{item.note}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="pricing__footnote">{site.pricing.footnote}</p>
+
+    <a
+      class="btn pricing__cta"
+      href={site.contacts.whatsappHref}
+      target="_blank"
+      rel="noopener"
+    >
+      Рассчитать мой проект
+    </a>
+  </div>
+</section>
+
+<style>
+  .pricing__head {
+    max-width: 52rem;
+    margin-bottom: clamp(2.5rem, 6vw, 3.5rem);
+  }
+
+  .pricing__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .price {
+    border: 1px solid var(--line);
+    padding: clamp(1.75rem, 3vw, 2.25rem);
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+  }
+
+  .price__title {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+  }
+
+  .price__amount {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .price__value {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 1.8rem + 2vw, 3rem);
+    line-height: 1;
+  }
+
+  .price__unit {
+    font-size: 0.9rem;
+    color: var(--ink-3);
+  }
+
+  .price__note {
+    font-size: 0.92rem;
+    color: var(--ink-2);
+    margin: auto 0 0;
+  }
+
+  .pricing__footnote {
+    margin-top: 2rem;
+    font-size: 0.92rem;
+    color: var(--ink-3);
+    max-width: 48rem;
+  }
+
+  .pricing__cta {
+    margin-top: 2rem;
+  }
+</style>
