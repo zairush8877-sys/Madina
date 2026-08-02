@@ -41,25 +41,18 @@ npm run check    # проверка типов
 Телефон задаётся один раз константой `PHONE_DIGITS` — из неё собираются
 и ссылка `tel:`, и ссылка на WhatsApp.
 
-## Как добавить видео
+## Видео
 
-Секция с видео уже написана, но выключена — файла пока нет.
+Ролик лежит в `public/video/tour.mp4` (сжат до ~5 МБ из исходных 18,6 МБ),
+постер — `tour-poster.jpg`. Управляется объектом `video` в `src/content/site.ts`:
+там можно поменять заголовок, подпись или выключить секцию (`enabled: false`).
 
-1. Положите ролик и кадр-постер в `public/video/`.
-2. В `src/content/site.ts` в объекте `video` укажите:
-   ```ts
-   enabled: true,
-   src: 'video/tour.mp4',
-   poster: 'video/tour-poster.jpg',
-   caption: 'Короткая подпись под роликом',
-   ```
-
-Перед публикацией ролик стоит пережать, чтобы он весил меньше ~6 МБ:
+Чтобы заменить ролик, пережмите новый файл до ~6 МБ и положите на то же место:
 
 ```bash
-ffmpeg -i исходник.mp4 -vcodec libx264 -crf 26 -preset slow \
+ffmpeg -i исходник.mp4 -vcodec libx264 -crf 27 -preset slow \
        -movflags +faststart public/video/tour.mp4
-ffmpeg -ss 00:00:01 -i public/video/tour.mp4 -frames:v 1 \
+ffmpeg -ss 00:00:02 -i public/video/tour.mp4 -frames:v 1 \
        public/video/tour-poster.jpg
 ```
 
@@ -81,9 +74,29 @@ ffmpeg -ss 00:00:01 -i public/video/tour.mp4 -frames:v 1 \
 и публикует его на GitHub Pages. Один раз нужно включить Pages в настройках
 репозитория: **Settings → Pages → Source → GitHub Actions**.
 
-Адрес сайта и подпапка заданы в `astro.config.mjs` (`site` и `base`).
-Для своего домена поменяйте `site` на него, а `base` — на `'/'`
-(или задайте переменные `SITE_URL` и `BASE_PATH` при сборке).
+## Адрес сайта
+
+### Шаг 1 — переименовать аккаунт (бесплатно)
+
+GitHub → аватар справа вверху → **Settings → Account → Change username** →
+ввести `djapueva`. Сайт станет открываться по адресу
+`https://djapueva.github.io/madina`. Старые ссылки на репозиторий GitHub
+перенаправит автоматически.
+
+### Шаг 2 — свой домен djapueva.ru (когда купите)
+
+1. Купите домен у регистратора (reg.ru, nic.ru и т.п.) — на момент проверки
+   `djapueva.ru` был свободен.
+2. У регистратора добавьте DNS-записи:
+   - четыре записи **A** для `djapueva.ru`:
+     `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+   - запись **CNAME** для `www` → `djapueva.github.io`
+3. В репозитории: **Settings → Pages → Custom domain** → `djapueva.ru`,
+   дождитесь проверки и включите **Enforce HTTPS**.
+4. В `astro.config.mjs` поменяйте `SITE` на `'https://djapueva.ru'`,
+   а `BASE` на `'/'`, закоммитьте в `main`.
+
+DNS обновляется от нескольких минут до суток — это нормально.
 
 ## Структура
 

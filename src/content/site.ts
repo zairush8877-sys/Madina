@@ -39,12 +39,15 @@ export interface VideoConfig {
 }
 
 const video: VideoConfig = {
-  enabled: false,
+  enabled: true,
   eyebrow: 'Видео',
-  title: 'Как это выглядит вживую',
-  caption: '',
-  src: '',
-  poster: '',
+  title: 'Пара слов вживую',
+  caption:
+    'Мадина — о том, из чего складывается работа: о стройке, на которую ' +
+    'не терпится прийти с утра, и о путешествиях, которые потом ' +
+    'отражаются в интерьерах.',
+  src: 'video/tour.mp4',
+  poster: 'video/tour-poster.jpg',
 };
 
 export const site = {

@@ -8,13 +8,15 @@ const videoSrc = withBase(site.video.src);
 const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
 ---
 
-<section class="section" id="video">
-  <div class="wrap">
-    <header class="video__head">
+<section class="section section--tint" id="video">
+  <div class="wrap video__inner">
+    <div class="video__text">
       <p class="eyebrow">{site.video.eyebrow}</p>
       <h2>{site.video.title}</h2>
-    </header>
+      {site.video.caption && <p class="video__caption">{site.video.caption}</p>}
+    </div>
 
+    <!-- Ролик снят вертикально (9:16), поэтому плеер узкий, как экран телефона. -->
     <video
       class="video__player"
       src={videoSrc}
@@ -25,27 +27,40 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
     >
       Ваш браузер не поддерживает воспроизведение видео.
     </video>
-
-    {site.video.caption && <p class="video__caption">{site.video.caption}</p>}
   </div>
 </section>
 
 <style>
-  .video__head {
-    max-width: 52rem;
-    margin-bottom: clamp(2rem, 5vw, 3rem);
+  .video__inner {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+  }
+
+  .video__caption {
+    margin-top: 1.5rem;
+    color: var(--ink-2);
+    max-width: 46ch;
   }
 
   .video__player {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    max-width: 22rem;
+    aspect-ratio: 9 / 16;
     background: var(--ink);
-    object-fit: cover;
+    justify-self: center;
+    box-shadow: 0 1.5rem 3rem rgb(35 32 29 / 0.15);
   }
 
-  .video__caption {
-    margin-top: 1rem;
-    font-size: 0.92rem;
-    color: var(--ink-3);
+  @media (max-width: 860px) {
+    .video__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .video__player {
+      justify-self: start;
+      max-width: 19rem;
+    }
   }
 </style>
