@@ -1,0 +1,60 @@
+---
+import '../styles/fonts.css';
+import '../styles/global.css';
+import { site } from '../content/site';
+import { withBase } from '../lib/url';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = site.meta.title, description = site.meta.description } =
+  Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImage = new URL(withBase('og-image.jpg'), Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#fbf8f4" />
+    <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'ProfessionalService',
+        name: site.meta.title,
+        description: site.meta.description,
+        url: canonical,
+        image: ogImage,
+        telephone: site.contacts.phoneHref,
+        areaServed: site.contacts.areaServed,
+        founder: { '@type': 'Person', name: site.person.fullName },
+        serviceType: site.services.map((s) => s.title),
+      })}
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">К основному содержанию</a>
+    <slot />
+  </body>
+</html>

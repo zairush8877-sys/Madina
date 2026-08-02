@@ -1,0 +1,117 @@
+---
+import { site } from '../content/site';
+---
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="brand" href="#top">
+      <span class="brand__name">{site.person.fullName}</span>
+      <span class="brand__role">{site.person.role}</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Основная навигация">
+      {site.nav.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+
+    <a class="site-header__phone" href={`tel:${site.contacts.phoneHref}`}>
+      {site.contacts.phoneLabel}
+    </a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 4vw, 2.5rem);
+    min-height: 4.5rem;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    margin-right: auto;
+    line-height: 1.2;
+  }
+
+  .brand__name {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    letter-spacing: 0.01em;
+  }
+
+  .brand__role {
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .site-nav {
+    display: flex;
+    gap: clamp(0.9rem, 2.2vw, 1.9rem);
+    font-size: 0.85rem;
+  }
+
+  .site-nav a {
+    text-decoration: none;
+    color: var(--ink-2);
+    padding-block: 0.35rem;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .site-nav a:hover,
+  .site-nav a:focus-visible {
+    color: var(--ink);
+    border-bottom-color: var(--clay);
+  }
+
+  .site-header__phone {
+    font-size: 0.9rem;
+    text-decoration: none;
+    white-space: nowrap;
+    color: var(--ink);
+    border-bottom: 1px solid var(--clay);
+    padding-bottom: 2px;
+  }
+
+  /* Below the fold on small screens the nav wraps to its own row. */
+  @media (max-width: 860px) {
+    .site-header__inner {
+      padding-block: 0.75rem;
+      row-gap: 0.5rem;
+    }
+    .site-nav {
+      order: 3;
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .site-nav::-webkit-scrollbar {
+      display: none;
+    }
+    .site-nav a {
+      white-space: nowrap;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .site-header__phone {
+      font-size: 0.82rem;
+    }
+  }
+</style>

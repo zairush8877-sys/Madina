@@ -1,0 +1,89 @@
+---
+import { site } from '../content/site';
+---
+
+<section class="section contacts" id="contacts">
+  <div class="wrap contacts__inner">
+    <div class="contacts__text">
+      <p class="eyebrow eyebrow--light">{site.contacts.eyebrow}</p>
+      <h2>{site.contacts.title}</h2>
+      <p class="contacts__lede">{site.contacts.lede}</p>
+    </div>
+
+    <div class="contacts__actions">
+      <a
+        class="btn contacts__wa"
+        href={site.contacts.whatsappHref}
+        target="_blank"
+        rel="noopener"
+      >
+        {site.contacts.whatsappLabel}
+      </a>
+      <a class="btn btn--light" href={`tel:${site.contacts.phoneHref}`}>
+        {site.contacts.phoneLabel}
+      </a>
+      <p class="contacts__meta">
+        {site.contacts.preferred}<br />
+        {site.contacts.areaServed}
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contacts {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .eyebrow--light {
+    color: #d9a97f;
+  }
+
+  .contacts__inner {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: clamp(2rem, 6vw, 4rem);
+    align-items: center;
+  }
+
+  .contacts__lede {
+    margin-top: 1.5rem;
+    color: #cbc3ba;
+    max-width: 46ch;
+    font-size: clamp(1.02rem, 1rem + 0.3vw, 1.15rem);
+  }
+
+  .contacts__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .contacts__wa {
+    background: #d9a97f;
+    border-color: #d9a97f;
+    color: var(--ink);
+  }
+
+  .contacts__wa:hover,
+  .contacts__wa:focus-visible {
+    background: #e6bd97;
+    border-color: #e6bd97;
+    color: var(--ink);
+  }
+
+  .contacts__meta {
+    margin-top: 0.5rem;
+    font-size: 0.88rem;
+    color: #9d968e;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 860px) {
+    .contacts__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

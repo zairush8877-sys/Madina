@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Services from '../components/Services.astro';
+import Approach from '../components/Approach.astro';
+import Pricing from '../components/Pricing.astro';
+import VideoSection from '../components/VideoSection.astro';
+import Contacts from '../components/Contacts.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../content/site';
+---
+
+<Base>
+  <Header />
+  <main id="main">
+    <Hero />
+    <About />
+    <Services />
+    <Approach />
+    <Pricing />
+    {site.video.enabled && <VideoSection />}
+    <Contacts />
+  </main>
+  <Footer />
+</Base>

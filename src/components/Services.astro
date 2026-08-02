@@ -1,0 +1,108 @@
+---
+import { site } from '../content/site';
+---
+
+<section class="section" id="services">
+  <div class="wrap">
+    <header class="services__head">
+      <p class="eyebrow">Услуги</p>
+      <h2>От первого чертежа до последней ручки</h2>
+      <p class="lede">
+        Можно взять только проект, а можно передать мне весь объект — вместе
+        с бригадами, закупками и приёмкой. Как удобнее вам.
+      </p>
+    </header>
+
+    <ul class="services__grid" role="list">
+      {
+        site.services.map((service, i) => (
+          <li class="service">
+            <span class="service__num">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="service__title">{service.title}</h3>
+            <p class="service__summary">{service.summary}</p>
+            <ul class="service__points" role="list">
+              {service.points.map((point) => (
+                <li>{point}</li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .services__head {
+    max-width: 52rem;
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .services__head h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  /* Separators come from the cells themselves, not from a gap showing a
+     background colour — otherwise a partially filled last row renders as a
+     solid block where the missing cells would be. */
+  .services__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .service {
+    background: var(--paper);
+    padding: clamp(1.6rem, 3vw, 2.25rem);
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .service__num {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--clay);
+    letter-spacing: 0.08em;
+  }
+
+  .service__title {
+    margin: 0.75rem 0 0.85rem;
+  }
+
+  .service__summary {
+    color: var(--ink-2);
+    font-size: 0.97rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .service__points {
+    list-style: none;
+    margin: auto 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--ink-2);
+  }
+
+  .service__points li {
+    position: relative;
+    padding-left: 1.1rem;
+  }
+
+  .service__points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 5px;
+    height: 1px;
+    background: var(--clay);
+  }
+</style>
