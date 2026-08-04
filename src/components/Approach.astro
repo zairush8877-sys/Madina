@@ -2,18 +2,22 @@
 import { site } from '../content/site';
 ---
 
-<section class="section section--tint" id="approach">
+<section class="section approach-section" id="approach">
   <div class="wrap">
     <header class="approach__head">
-      <p class="eyebrow">{site.approach.eyebrow}</p>
-      <h2>{site.approach.title}</h2>
-      <p class="lede">{site.approach.lede}</p>
+      <p class="eyebrow reveal">{site.approach.eyebrow}</p>
+      <h2 class="reveal" style="--reveal-delay: 0.06s">{site.approach.title}</h2>
+      <p class="lede reveal" style="--reveal-delay: 0.12s">{site.approach.lede}</p>
     </header>
 
     <div class="approach__grid">
       {
-        site.approach.items.map((item) => (
-          <article class="approach__item">
+        site.approach.items.map((item, i) => (
+          <article
+            class="approach__item reveal"
+            style={`--reveal-delay: ${(i % 2) * 0.08}s`}
+          >
+            <span class="approach__beam" aria-hidden="true" />
             <h3>{item.title}</h3>
             <p>{item.body}</p>
           </article>
@@ -24,6 +28,13 @@ import { site } from '../content/site';
 </section>
 
 <style>
+  .approach-section {
+    background:
+      radial-gradient(45% 55% at 8% 90%, rgba(226, 96, 123, 0.07), transparent 70%),
+      var(--bg-2);
+    border-block: 1px solid var(--line);
+  }
+
   .approach__head {
     max-width: 52rem;
     margin-bottom: clamp(2.5rem, 6vw, 4rem);
@@ -40,8 +51,25 @@ import { site } from '../content/site';
   }
 
   .approach__item {
+    position: relative;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--clay);
+  }
+
+  /* Градиентная линия, «зажигающаяся» при появлении блока.
+     Свёрнута только при работающем JS — без него видна сразу. */
+  .approach__beam {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1px;
+    width: 100%;
+    background: var(--grad-accent);
+    transform-origin: left;
+    transition: transform 1.1s var(--ease-out) 0.25s;
+  }
+
+  :global(.js) .approach__item:not(.is-visible) .approach__beam {
+    transform: scaleX(0);
   }
 
   .approach__item h3 {
@@ -50,6 +78,12 @@ import { site } from '../content/site';
 
   .approach__item p {
     color: var(--ink-2);
-    font-size: 0.97rem;
+    font-size: 0.96rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .approach__beam {
+      transform: scaleX(1);
+    }
   }
 </style>

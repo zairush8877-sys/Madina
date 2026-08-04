@@ -8,29 +8,44 @@ const videoSrc = withBase(site.video.src);
 const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
 ---
 
-<section class="section section--tint" id="video">
+<section class="section video-section" id="video">
   <div class="wrap video__inner">
     <div class="video__text">
-      <p class="eyebrow">{site.video.eyebrow}</p>
-      <h2>{site.video.title}</h2>
-      {site.video.caption && <p class="video__caption">{site.video.caption}</p>}
+      <p class="eyebrow reveal">{site.video.eyebrow}</p>
+      <h2 class="reveal" style="--reveal-delay: 0.06s">{site.video.title}</h2>
+      {
+        site.video.caption && (
+          <p class="video__caption reveal" style="--reveal-delay: 0.12s">
+            {site.video.caption}
+          </p>
+        )
+      }
     </div>
 
-    <!-- Ролик снят вертикально (9:16), поэтому плеер узкий, как экран телефона. -->
-    <video
-      class="video__player"
-      src={videoSrc}
-      poster={posterSrc}
-      controls
-      playsinline
-      preload="none"
-    >
-      Ваш браузер не поддерживает воспроизведение видео.
-    </video>
+    <!-- Ролик снят вертикально (9:16) — плеер узкий, как экран телефона. -->
+    <div class="video__frame reveal" style="--reveal-delay: 0.1s">
+      <video
+        class="video__player"
+        src={videoSrc}
+        poster={posterSrc}
+        controls
+        playsinline
+        preload="none"
+      >
+        Ваш браузер не поддерживает воспроизведение видео.
+      </video>
+    </div>
   </div>
 </section>
 
 <style>
+  .video-section {
+    background:
+      radial-gradient(45% 55% at 92% 20%, rgba(245, 178, 99, 0.07), transparent 70%),
+      var(--bg-2);
+    border-block: 1px solid var(--line);
+  }
+
   .video__inner {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
@@ -44,23 +59,44 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
     max-width: 46ch;
   }
 
+  .video__frame {
+    position: relative;
+    justify-self: center;
+    width: 100%;
+    max-width: 21rem;
+  }
+
+  /* Неоновая градиентная рамка вокруг плеера. */
+  .video__frame::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border-radius: calc(var(--radius) + 10px);
+    padding: 1px;
+    background: var(--grad-accent);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
   .video__player {
     width: 100%;
-    max-width: 22rem;
     aspect-ratio: 9 / 16;
-    background: var(--ink);
-    justify-self: center;
-    box-shadow: 0 1.5rem 3rem rgb(35 32 29 / 0.15);
+    background: #000;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
   }
 
   @media (max-width: 860px) {
     .video__inner {
       grid-template-columns: 1fr;
     }
-
-    .video__player {
+    .video__frame {
       justify-self: start;
-      max-width: 19rem;
+      max-width: 18rem;
     }
   }
 </style>

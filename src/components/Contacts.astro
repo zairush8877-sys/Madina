@@ -3,23 +3,26 @@ import { site } from '../content/site';
 ---
 
 <section class="section contacts" id="contacts">
+  <div class="contacts__glow" aria-hidden="true"></div>
   <div class="wrap contacts__inner">
     <div class="contacts__text">
-      <p class="eyebrow eyebrow--light">{site.contacts.eyebrow}</p>
-      <h2>{site.contacts.title}</h2>
-      <p class="contacts__lede">{site.contacts.lede}</p>
+      <p class="eyebrow reveal">{site.contacts.eyebrow}</p>
+      <h2 class="reveal" style="--reveal-delay: 0.06s">{site.contacts.title}</h2>
+      <p class="contacts__lede reveal" style="--reveal-delay: 0.12s">
+        {site.contacts.lede}
+      </p>
     </div>
 
-    <div class="contacts__actions">
+    <div class="contacts__actions glass reveal" style="--reveal-delay: 0.15s">
       <a
-        class="btn contacts__wa"
+        class="btn"
         href={site.contacts.whatsappHref}
         target="_blank"
         rel="noopener"
       >
         {site.contacts.whatsappLabel}
       </a>
-      <a class="btn btn--light" href={`tel:${site.contacts.phoneHref}`}>
+      <a class="btn btn--ghost" href={`tel:${site.contacts.phoneHref}`}>
         {site.contacts.phoneLabel}
       </a>
       <p class="contacts__meta">
@@ -32,15 +35,21 @@ import { site } from '../content/site';
 
 <style>
   .contacts {
-    background: var(--ink);
-    color: var(--paper);
+    position: relative;
+    overflow: hidden;
   }
 
-  .eyebrow--light {
-    color: #d9a97f;
+  .contacts__glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(50% 70% at 50% 110%, rgba(226, 96, 123, 0.16), transparent 70%),
+      radial-gradient(35% 50% at 15% 0%, rgba(127, 90, 240, 0.1), transparent 70%);
+    pointer-events: none;
   }
 
   .contacts__inner {
+    position: relative;
     display: grid;
     grid-template-columns: 1.15fr 0.85fr;
     gap: clamp(2rem, 6vw, 4rem);
@@ -49,7 +58,7 @@ import { site } from '../content/site';
 
   .contacts__lede {
     margin-top: 1.5rem;
-    color: #cbc3ba;
+    color: var(--ink-2);
     max-width: 46ch;
     font-size: clamp(1.02rem, 1rem + 0.3vw, 1.15rem);
   }
@@ -59,25 +68,13 @@ import { site } from '../content/site';
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
-  }
-
-  .contacts__wa {
-    background: #d9a97f;
-    border-color: #d9a97f;
-    color: var(--ink);
-  }
-
-  .contacts__wa:hover,
-  .contacts__wa:focus-visible {
-    background: #e6bd97;
-    border-color: #e6bd97;
-    color: var(--ink);
+    padding: clamp(1.75rem, 3vw, 2.5rem);
   }
 
   .contacts__meta {
     margin-top: 0.5rem;
     font-size: 0.88rem;
-    color: #9d968e;
+    color: var(--ink-3);
     line-height: 1.6;
   }
 
