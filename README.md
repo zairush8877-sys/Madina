@@ -80,7 +80,7 @@ ffmpeg -ss 00:00:02 -i public/video/tour.mp4 -frames:v 1 \
 
 GitHub → аватар справа вверху → **Settings → Account → Change username** →
 ввести `djapueva`. Сайт станет открываться по адресу
-`https://djapueva.github.io/madina`. Старые ссылки на репозиторий GitHub
+`https://djapueva.github.io/Madina`. Старые ссылки на репозиторий GitHub
 перенаправит автоматически.
 
 ### Шаг 2 — свой домен djapueva.ru (когда купите)

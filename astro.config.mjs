@@ -2,12 +2,14 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// GitHub Pages project site: https://<аккаунт>.github.io/madina.
+// GitHub Pages project site: https://<аккаунт>.github.io/Madina.
+// Подпапка должна в точности совпадать с именем репозитория, включая
+// заглавную M — пути на github.io чувствительны к регистру.
 // После переименования аккаунта в `djapueva` адрес станет
-// https://djapueva.github.io/madina; когда подключите домен djapueva.ru —
+// https://djapueva.github.io/Madina; когда подключите домен djapueva.ru —
 // поменяйте SITE на 'https://djapueva.ru', а BASE на '/'.
-const SITE = process.env.SITE_URL ?? 'https://djapueva.github.io';
-const BASE = process.env.BASE_PATH ?? '/madina';
+const SITE = process.env.SITE_URL ?? 'https://zairush8877-sys.github.io';
+const BASE = process.env.BASE_PATH ?? '/Madina';
 
 export default defineConfig({
   site: SITE,
