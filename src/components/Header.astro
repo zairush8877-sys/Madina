@@ -5,8 +5,11 @@ import { site } from '../content/site';
 <header class="site-header">
   <div class="wrap site-header__inner">
     <a class="brand" href="#top">
-      <span class="brand__name">{site.person.fullName}</span>
-      <span class="brand__role">{site.person.role}</span>
+      <span class="brand__mark" aria-hidden="true"></span>
+      <span class="brand__text">
+        <span class="brand__name">{site.person.fullName}</span>
+        <span class="brand__role">{site.person.role}</span>
+      </span>
     </a>
 
     <nav class="site-nav" aria-label="Основная навигация">
@@ -23,9 +26,9 @@ import { site } from '../content/site';
   .site-header {
     position: sticky;
     top: 0;
-    z-index: 20;
-    background: color-mix(in srgb, var(--paper) 88%, transparent);
-    backdrop-filter: blur(10px);
+    z-index: 40;
+    background: rgba(10, 10, 15, 0.65);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--line);
   }
 
@@ -33,71 +36,121 @@ import { site } from '../content/site';
     display: flex;
     align-items: center;
     gap: clamp(1rem, 4vw, 2.5rem);
-    min-height: 4.5rem;
+    min-height: 4.4rem;
     flex-wrap: wrap;
   }
 
   .brand {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
     text-decoration: none;
     margin-right: auto;
-    line-height: 1.2;
+    line-height: 1.25;
+  }
+
+  /* Пульсирующая градиентная точка — маленький «маяк» бренда. */
+  .brand__mark {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--grad-accent);
+    box-shadow: 0 0 12px rgba(226, 96, 123, 0.8);
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      box-shadow: 0 0 6px rgba(226, 96, 123, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 16px rgba(245, 178, 99, 0.95);
+    }
+  }
+
+  .brand__text {
+    display: flex;
+    flex-direction: column;
   }
 
   .brand__name {
     font-family: var(--font-display);
-    font-size: 1.35rem;
-    letter-spacing: 0.01em;
+    font-size: 0.86rem;
+    letter-spacing: 0.04em;
   }
 
   .brand__role {
-    font-size: 0.7rem;
-    letter-spacing: 0.16em;
+    font-size: 0.6rem;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: var(--ink-3);
   }
 
   .site-nav {
     display: flex;
-    gap: clamp(0.9rem, 2.2vw, 1.9rem);
-    font-size: 0.85rem;
+    gap: clamp(0.9rem, 2.2vw, 1.8rem);
+    font-size: 0.84rem;
   }
 
   .site-nav a {
+    position: relative;
     text-decoration: none;
     color: var(--ink-2);
     padding-block: 0.35rem;
-    border-bottom: 1px solid transparent;
-    transition: color 0.2s ease, border-color 0.2s ease;
+    transition: color 0.25s ease;
+  }
+
+  .site-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: 0;
+    height: 1px;
+    background: var(--grad-accent);
+    transition: right 0.35s var(--ease-out);
   }
 
   .site-nav a:hover,
   .site-nav a:focus-visible {
     color: var(--ink);
-    border-bottom-color: var(--clay);
+  }
+
+  .site-nav a:hover::after,
+  .site-nav a:focus-visible::after {
+    right: 0;
   }
 
   .site-header__phone {
-    font-size: 0.9rem;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
     text-decoration: none;
     white-space: nowrap;
     color: var(--ink);
-    border-bottom: 1px solid var(--clay);
-    padding-bottom: 2px;
+    padding: 0.55rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
   }
 
-  /* Below the fold on small screens the nav wraps to its own row. */
-  @media (max-width: 860px) {
+  .site-header__phone:hover,
+  .site-header__phone:focus-visible {
+    border-color: rgba(245, 178, 99, 0.6);
+    box-shadow: 0 0 18px rgba(245, 178, 99, 0.25);
+  }
+
+  @media (max-width: 900px) {
     .site-header__inner {
-      padding-block: 0.75rem;
-      row-gap: 0.5rem;
+      padding-block: 0.7rem;
+      row-gap: 0.4rem;
     }
     .site-nav {
       order: 3;
       width: 100%;
       overflow-x: auto;
-      padding-bottom: 0.25rem;
+      padding-bottom: 0.3rem;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
@@ -106,12 +159,6 @@ import { site } from '../content/site';
     }
     .site-nav a {
       white-space: nowrap;
-    }
-  }
-
-  @media (max-width: 420px) {
-    .site-header__phone {
-      font-size: 0.82rem;
     }
   }
 </style>

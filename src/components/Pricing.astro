@@ -5,14 +5,18 @@ import { site } from '../content/site';
 <section class="section" id="pricing">
   <div class="wrap">
     <header class="pricing__head">
-      <p class="eyebrow">{site.pricing.eyebrow}</p>
-      <h2>{site.pricing.title}</h2>
+      <p class="eyebrow reveal">{site.pricing.eyebrow}</p>
+      <h2 class="reveal" style="--reveal-delay: 0.06s">{site.pricing.title}</h2>
     </header>
 
     <div class="pricing__grid">
       {
-        site.pricing.items.map((item) => (
-          <article class="price">
+        site.pricing.items.map((item, i) => (
+          <article
+            class="price glass reveal"
+            data-tilt
+            style={`--reveal-delay: ${i * 0.08}s`}
+          >
             <h3 class="price__title">{item.title}</h3>
             <p class="price__amount">
               <span class="price__value">{item.price}</span>
@@ -24,10 +28,10 @@ import { site } from '../content/site';
       }
     </div>
 
-    <p class="pricing__footnote">{site.pricing.footnote}</p>
+    <p class="pricing__footnote reveal">{site.pricing.footnote}</p>
 
     <a
-      class="btn pricing__cta"
+      class="btn pricing__cta reveal"
       href={site.contacts.whatsappHref}
       target="_blank"
       rel="noopener"
@@ -46,24 +50,48 @@ import { site } from '../content/site';
   .pricing__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    gap: clamp(1.5rem, 3vw, 2.5rem);
+    gap: 1.25rem;
   }
 
   .price {
-    border: 1px solid var(--line);
+    position: relative;
     padding: clamp(1.75rem, 3vw, 2.25rem);
     display: flex;
     flex-direction: column;
-    background: var(--paper);
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.3s ease;
+    will-change: transform;
+  }
+
+  .price::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      240px circle at var(--px, 50%) var(--py, 50%),
+      rgba(127, 90, 240, 0.16),
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+
+  .price:hover {
+    border-color: rgba(127, 90, 240, 0.4);
+  }
+
+  .price:hover::before {
+    opacity: 1;
   }
 
   .price__title {
     font-family: var(--font-body);
-    font-size: 0.8rem;
-    letter-spacing: 0.14em;
+    font-size: 0.74rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--ink-3);
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 1.25rem;
   }
 
@@ -76,8 +104,13 @@ import { site } from '../content/site';
 
   .price__value {
     font-family: var(--font-display);
-    font-size: clamp(2.25rem, 1.8rem + 2vw, 3rem);
+    font-weight: 600;
+    font-size: clamp(1.9rem, 1.5rem + 1.8vw, 2.7rem);
     line-height: 1;
+    background: var(--grad-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .price__unit {

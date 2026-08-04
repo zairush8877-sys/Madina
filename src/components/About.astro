@@ -5,9 +5,9 @@ import portraitA from '../assets/photos/portrait-evening-01.jpg';
 import portraitB from '../assets/photos/portrait-flowers-01.jpg';
 ---
 
-<section class="section section--tint" id="about">
+<section class="section about-section" id="about">
   <div class="wrap about">
-    <div class="about__media">
+    <div class="about__media reveal">
       <Picture
         class="about__img about__img--a"
         src={portraitA}
@@ -29,17 +29,32 @@ import portraitB from '../assets/photos/portrait-flowers-01.jpg';
     </div>
 
     <div class="about__text">
-      <p class="eyebrow">{site.about.eyebrow}</p>
-      <h2>{site.about.title}</h2>
+      <p class="eyebrow reveal">{site.about.eyebrow}</p>
+      <h2 class="reveal" style="--reveal-delay: 0.06s">{site.about.title}</h2>
       <div class="about__body">
-        {site.about.paragraphs.map((p) => <p>{p}</p>)}
+        {
+          site.about.paragraphs.map((p, i) => (
+            <p class="reveal" style={`--reveal-delay: ${0.1 + i * 0.06}s`}>
+              {p}
+            </p>
+          ))
+        }
       </div>
-      <blockquote class="about__quote">{site.about.quote}</blockquote>
+      <blockquote class="about__quote glass reveal" style="--reveal-delay: 0.2s">
+        {site.about.quote}
+      </blockquote>
     </div>
   </div>
 </section>
 
 <style>
+  .about-section {
+    background:
+      radial-gradient(40% 50% at 90% 10%, rgba(127, 90, 240, 0.08), transparent 70%),
+      var(--bg-2);
+    border-block: 1px solid var(--line);
+  }
+
   .about {
     display: grid;
     grid-template-columns: 0.9fr 1.1fr;
@@ -60,6 +75,9 @@ import portraitB from '../assets/photos/portrait-flowers-01.jpg';
   .about__img--a :global(img) {
     aspect-ratio: 3 / 4;
     object-fit: cover;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    filter: saturate(0.92);
   }
 
   .about__img--b {
@@ -67,12 +85,14 @@ import portraitB from '../assets/photos/portrait-flowers-01.jpg';
     right: -1rem;
     bottom: 0;
     width: 52%;
-    border: 6px solid var(--paper-2);
   }
 
   .about__img--b :global(img) {
     aspect-ratio: 3 / 4;
     object-fit: cover;
+    border-radius: var(--radius);
+    border: 1px solid rgba(245, 178, 99, 0.35);
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
   }
 
   .about__body {
@@ -82,21 +102,20 @@ import portraitB from '../assets/photos/portrait-flowers-01.jpg';
 
   .about__quote {
     margin: 2rem 0 0;
-    padding-left: 1.5rem;
-    border-left: 2px solid var(--clay);
-    font-family: var(--font-display);
-    font-size: clamp(1.2rem, 1.05rem + 0.7vw, 1.6rem);
-    line-height: 1.4;
+    padding: 1.4rem 1.6rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.2rem, 1.05rem + 0.7vw, 1.55rem);
+    line-height: 1.45;
     color: var(--ink);
+    border-left: 2px solid var(--glow-a);
   }
 
   @media (max-width: 900px) {
     .about {
       grid-template-columns: 1fr;
     }
-
     .about__media {
-      max-width: 26rem;
+      max-width: 24rem;
       padding-bottom: 3.5rem;
     }
   }

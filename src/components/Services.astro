@@ -5,9 +5,11 @@ import { site } from '../content/site';
 <section class="section" id="services">
   <div class="wrap">
     <header class="services__head">
-      <p class="eyebrow">Услуги</p>
-      <h2>От первого чертежа до последней ручки</h2>
-      <p class="lede">
+      <p class="eyebrow reveal">Услуги</p>
+      <h2 class="reveal" style="--reveal-delay: 0.06s">
+        От первого чертежа<br />до <span class="accent">последней ручки</span>
+      </h2>
+      <p class="lede reveal" style="--reveal-delay: 0.12s">
         Можно взять только проект, а можно передать мне весь объект — вместе
         с бригадами, закупками и приёмкой. Как удобнее вам.
       </p>
@@ -16,7 +18,11 @@ import { site } from '../content/site';
     <ul class="services__grid" role="list">
       {
         site.services.map((service, i) => (
-          <li class="service">
+          <li
+            class="service glass reveal"
+            data-tilt
+            style={`--reveal-delay: ${(i % 4) * 0.07}s`}
+          >
             <span class="service__num">{String(i + 1).padStart(2, '0')}</span>
             <h3 class="service__title">{service.title}</h3>
             <p class="service__summary">{service.summary}</p>
@@ -42,42 +48,66 @@ import { site } from '../content/site';
     margin-bottom: 1.25rem;
   }
 
-  /* Separators come from the cells themselves, not from a gap showing a
-     background colour — otherwise a partially filled last row renders as a
-     solid block where the missing cells would be. */
   .services__grid {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    border-top: 1px solid var(--line);
-    border-left: 1px solid var(--line);
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1.1rem;
   }
 
   .service {
-    background: var(--paper);
-    padding: clamp(1.6rem, 3vw, 2.25rem);
+    position: relative;
+    padding: clamp(1.5rem, 3vw, 2rem);
     display: flex;
     flex-direction: column;
-    border-right: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    transition: transform 0.25s ease, border-color 0.3s ease;
+    will-change: transform;
+  }
+
+  /* Блик, следующий за курсором (координаты задаёт motion.ts). */
+  .service::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      220px circle at var(--px, 50%) var(--py, 50%),
+      rgba(245, 178, 99, 0.14),
+      transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+
+  .service:hover {
+    border-color: rgba(245, 178, 99, 0.35);
+  }
+
+  .service:hover::before {
+    opacity: 1;
   }
 
   .service__num {
     font-family: var(--font-display);
-    font-size: 0.95rem;
-    color: var(--clay);
-    letter-spacing: 0.08em;
+    font-weight: 300;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    background: var(--grad-accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .service__title {
-    margin: 0.75rem 0 0.85rem;
+    margin: 0.8rem 0 0.85rem;
   }
 
   .service__summary {
     color: var(--ink-2);
-    font-size: 0.97rem;
+    font-size: 0.95rem;
     margin-bottom: 1.25rem;
   }
 
@@ -87,7 +117,7 @@ import { site } from '../content/site';
     padding: 0;
     display: grid;
     gap: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--ink-2);
   }
 
@@ -100,9 +130,10 @@ import { site } from '../content/site';
     content: '';
     position: absolute;
     left: 0;
-    top: 0.62em;
-    width: 5px;
+    top: 0.6em;
+    width: 6px;
     height: 1px;
-    background: var(--clay);
+    background: var(--glow-a);
+    box-shadow: 0 0 6px rgba(245, 178, 99, 0.9);
   }
 </style>

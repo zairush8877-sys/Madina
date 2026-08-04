@@ -33,7 +33,7 @@ const ogImage = new URL(withBase('og-image.jpg'), Astro.site).toString();
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <meta name="theme-color" content="#fbf8f4" />
+    <meta name="theme-color" content="#0a0a0f" />
     <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
 
     <script
@@ -54,7 +54,13 @@ const ogImage = new URL(withBase('og-image.jpg'), Astro.site).toString();
     />
   </head>
   <body>
+    <script is:inline>
+      // Класс-маркер «JS работает»: только при нём .reveal прячет контент.
+      // Без JavaScript страница остаётся полностью видимой.
+      document.documentElement.classList.add('js');
+    </script>
     <a class="skip-link" href="#main">К основному содержанию</a>
     <slot />
+    <script src="../scripts/motion.ts"></script>
   </body>
 </html>
