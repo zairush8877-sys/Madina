@@ -1,30 +1,26 @@
 /* ---------------------------------------------------------------
-   Design tokens — futuristic dark
-   Deep space background, luminous amber/rose accents, glass panels.
+   Design tokens — art deco
+   Almost-black background, antique gold lines, diamond lattice,
+   arches and sunburst rays. Serif display, spaced small caps.
    --------------------------------------------------------------- */
 :root {
-  --bg: #0a0a0f;
-  --bg-2: #101018;
-  --ink: #f4f1ec;
-  --ink-2: #b8b2ab;
-  --ink-3: #7d7871;
-  --glow-a: #f5b263;
-  --glow-b: #e2607b;
-  --glow-c: #7f5af0;
-  --line: rgba(244, 241, 236, 0.1);
-  --glass: rgba(255, 255, 255, 0.04);
+  --bg: #12100d;
+  --bg-2: #171410;
+  --ink: #efe9dd;
+  --ink-2: #b8ad97;
+  --ink-3: #857c69;
+  --gold: #c9a86a;
+  --gold-soft: rgba(201, 168, 106, 0.4);
+  --gold-faint: rgba(201, 168, 106, 0.14);
+  --line: rgba(201, 168, 106, 0.28);
 
-  --grad-accent: linear-gradient(100deg, var(--glow-a), var(--glow-b) 55%, var(--glow-c));
-
-  --font-display: 'Unbounded', 'Arial Black', sans-serif;
-  --font-serif: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
 
   --wrap: 1180px;
   --gutter: clamp(1.25rem, 5vw, 3.5rem);
-  --section-y: clamp(4rem, 10vw, 8rem);
-  --radius: 18px;
+  --section-y: clamp(4rem, 10vw, 7.5rem);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -42,10 +38,14 @@ html {
 body {
   margin: 0;
   background: var(--bg);
+  /* Едва заметная ромбовидная решётка по всему фону. */
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 44px, rgba(201, 168, 106, 0.035) 44px 45px),
+    repeating-linear-gradient(-45deg, transparent 0 44px, rgba(201, 168, 106, 0.035) 44px 45px);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
-  line-height: 1.75;
+  font-size: clamp(0.98rem, 0.95rem + 0.15vw, 1.05rem);
+  line-height: 1.8;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -66,22 +66,21 @@ h2,
 h3 {
   font-family: var(--font-display);
   font-weight: 400;
-  line-height: 1.15;
+  line-height: 1.12;
   margin: 0;
   text-wrap: balance;
 }
 
 h1 {
-  font-size: clamp(1.9rem, 1rem + 4.2vw, 4.1rem);
-  font-weight: 600;
+  font-size: clamp(2.6rem, 1.5rem + 4.8vw, 5rem);
 }
 
 h2 {
-  font-size: clamp(1.4rem, 1rem + 2vw, 2.4rem);
+  font-size: clamp(1.9rem, 1.4rem + 2.2vw, 3.1rem);
 }
 
 h3 {
-  font-size: clamp(0.98rem, 0.9rem + 0.4vw, 1.15rem);
+  font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.7rem);
 }
 
 p {
@@ -93,9 +92,13 @@ p:last-child {
   margin-bottom: 0;
 }
 
+em {
+  font-style: italic;
+}
+
 ::selection {
-  background: var(--glow-b);
-  color: #fff;
+  background: var(--gold);
+  color: #12100d;
 }
 
 /* --------------------------------------------------------------- */
@@ -112,40 +115,53 @@ p:last-child {
   padding-block: var(--section-y);
 }
 
+/* Надзаголовок с тире по бокам — фирменный знак стиля. */
 .eyebrow {
-  font-family: var(--font-display);
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
   font-size: 0.66rem;
-  font-weight: 300;
-  letter-spacing: 0.34em;
+  letter-spacing: 0.42em;
   text-transform: uppercase;
-  margin: 0 0 1.25rem;
-  background: var(--grad-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--gold);
+  margin: 0 0 1.5rem;
+}
+
+.eyebrow::before,
+.eyebrow::after {
+  content: '';
+  height: 1px;
+  width: 2rem;
+  background: var(--gold-soft);
+}
+
+.eyebrow--start::after {
+  display: none;
 }
 
 .lede {
-  font-size: clamp(1.02rem, 1rem + 0.3vw, 1.2rem);
+  font-size: clamp(1rem, 0.97rem + 0.3vw, 1.15rem);
   color: var(--ink-2);
-  max-width: 62ch;
+  max-width: 60ch;
 }
 
-/* Gradient-highlighted word inside headings */
+/* Золотой курсивный акцент в заголовках. */
 .accent {
-  background: var(--grad-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-style: italic;
+  color: var(--gold);
 }
 
-/* Glass card ---------------------------------------------------- */
-
-.glass {
-  background: var(--glass);
+/* Карточка с золотой рамкой и мягким свечением сверху. */
+.panel {
+  background: linear-gradient(180deg, var(--gold-faint), transparent 42%);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  backdrop-filter: blur(14px);
+}
+
+/* Ромб-маркер. */
+.diamond {
+  display: inline-block;
+  color: var(--gold);
+  font-size: 0.8em;
 }
 
 /* Buttons ------------------------------------------------------- */
@@ -156,37 +172,62 @@ p:last-child {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 1rem 2.1rem;
-  border: 0;
-  border-radius: 999px;
-  background: var(--grad-accent);
-  color: #14080b;
-  font-family: var(--font-display);
-  font-size: 0.72rem;
+  padding: 1.05rem 2.6rem;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
-  box-shadow: 0 0 0 rgba(226, 96, 123, 0);
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Двойная рамка. */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--gold-soft);
+  transition: inherit;
+  pointer-events: none;
 }
 
 .btn:hover,
 .btn:focus-visible {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 34px rgba(226, 96, 123, 0.42);
+  background: var(--gold);
+  color: #12100d;
+  box-shadow: 0 0 34px rgba(201, 168, 106, 0.28);
 }
 
-.btn--ghost {
+.btn--solid {
+  background: var(--gold);
+  color: #12100d;
+}
+
+.btn--solid:hover,
+.btn--solid:focus-visible {
+  background: #dcbf85;
+  border-color: #dcbf85;
+}
+
+.btn--muted {
+  border-color: var(--line);
+  color: var(--ink-2);
+}
+
+.btn--muted::after {
+  border-color: transparent;
+}
+
+.btn--muted:hover,
+.btn--muted:focus-visible {
   background: transparent;
-  color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--line);
-}
-
-.btn--ghost:hover,
-.btn--ghost:focus-visible {
-  box-shadow: inset 0 0 0 1px rgba(244, 241, 236, 0.5);
+  color: var(--gold);
+  border-color: var(--gold);
+  box-shadow: none;
 }
 
 /* Scroll-reveal ------------------------------------------------- */
@@ -195,8 +236,8 @@ p:last-child {
    (класс .js ставит инлайн-скрипт в Base.astro) — иначе контент виден сразу. */
 .js .reveal {
   opacity: 0;
-  transform: translateY(34px);
-  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+  transform: translateY(30px);
+  transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
   transition-delay: var(--reveal-delay, 0s);
 }
 
@@ -208,7 +249,7 @@ p:last-child {
 /* Focus & a11y -------------------------------------------------- */
 
 :where(a, button, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--glow-a);
+  outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
 
@@ -216,8 +257,8 @@ p:last-child {
   position: absolute;
   left: -9999px;
   top: 0;
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--gold);
+  color: #12100d;
   padding: 0.75rem 1.25rem;
   z-index: 100;
 }
@@ -238,7 +279,7 @@ p:last-child {
   border: 0;
 }
 
-/* Reduced motion: no reveals, no float, no shimmer -------------- */
+/* Reduced motion ------------------------------------------------ */
 
 @media (prefers-reduced-motion: reduce) {
   html {

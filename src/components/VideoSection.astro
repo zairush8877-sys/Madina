@@ -11,7 +11,7 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
 <section class="section video-section" id="video">
   <div class="wrap video__inner">
     <div class="video__text">
-      <p class="eyebrow reveal">{site.video.eyebrow}</p>
+      <p class="eyebrow eyebrow--start reveal">{site.video.eyebrow}</p>
       <h2 class="reveal" style="--reveal-delay: 0.06s">{site.video.title}</h2>
       {
         site.video.caption && (
@@ -22,7 +22,7 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
       }
     </div>
 
-    <!-- Ролик снят вертикально (9:16) — плеер узкий, как экран телефона. -->
+    <!-- Ролик снят вертикально (9:16) — плеер в арке, как портал. -->
     <div class="video__frame reveal" style="--reveal-delay: 0.1s">
       <video
         class="video__player"
@@ -40,16 +40,14 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
 
 <style>
   .video-section {
-    background:
-      radial-gradient(45% 55% at 92% 20%, rgba(245, 178, 99, 0.07), transparent 70%),
-      var(--bg-2);
+    background: var(--bg-2);
     border-block: 1px solid var(--line);
   }
 
   .video__inner {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
-    gap: clamp(2rem, 6vw, 5rem);
+    gap: clamp(2.5rem, 6vw, 5rem);
     align-items: center;
   }
 
@@ -63,31 +61,28 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
     position: relative;
     justify-self: center;
     width: 100%;
-    max-width: 21rem;
+    max-width: 20rem;
+    border: 1px solid var(--gold);
+    border-radius: 50% 50% 0 0 / 24% 24% 0 0;
+    padding: 12px;
   }
 
-  /* Неоновая градиентная рамка вокруг плеера. */
   .video__frame::after {
     content: '';
     position: absolute;
-    inset: -12px;
-    border-radius: calc(var(--radius) + 10px);
-    padding: 1px;
-    background: var(--grad-accent);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.5;
+    inset: -14px -14px 0;
+    border: 1px solid var(--gold-soft);
+    border-bottom: 0;
+    border-radius: 50% 50% 0 0 / 24% 24% 0 0;
     pointer-events: none;
   }
 
   .video__player {
     width: 100%;
     aspect-ratio: 9 / 16;
+    object-fit: cover;
     background: #000;
-    border-radius: var(--radius);
-    border: 1px solid var(--line);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+    border-radius: 44% 44% 0 0 / 21% 21% 0 0;
   }
 
   @media (max-width: 860px) {
@@ -96,7 +91,7 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
     }
     .video__frame {
       justify-self: start;
-      max-width: 18rem;
+      max-width: 17rem;
     }
   }
 </style>

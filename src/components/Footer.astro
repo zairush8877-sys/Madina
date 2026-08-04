@@ -7,6 +7,7 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <div class="wrap site-footer__inner">
     <p class="site-footer__brand">
+      <span class="diamond" aria-hidden="true">◆</span>
       {site.person.fullName} — {site.person.role.toLowerCase()}, {site.person.city}
     </p>
     <p class="site-footer__legal">© {year}. Все права защищены.</p>
@@ -17,7 +18,8 @@ const year = new Date().getFullYear();
   .site-footer {
     border-top: 1px solid var(--line);
     padding-block: 2rem;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
     color: var(--ink-3);
   }
 
@@ -30,5 +32,10 @@ const year = new Date().getFullYear();
 
   .site-footer p {
     margin: 0;
+  }
+
+  .site-footer .diamond {
+    margin-right: 0.5rem;
+    font-size: 0.6rem;
   }
 </style>
