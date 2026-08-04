@@ -7,7 +7,7 @@ import { site } from '../content/site';
     <header class="services__head">
       <p class="eyebrow reveal">Услуги</p>
       <h2 class="reveal" style="--reveal-delay: 0.06s">
-        От первого чертежа<br />до <span class="accent">последней ручки</span>
+        От первого чертежа<br />до <em class="accent">последней ручки</em>
       </h2>
       <p class="lede reveal" style="--reveal-delay: 0.12s">
         Можно взять только проект, а можно передать мне весь объект — вместе
@@ -19,10 +19,11 @@ import { site } from '../content/site';
       {
         site.services.map((service, i) => (
           <li
-            class="service glass reveal"
+            class="service panel reveal"
             data-tilt
             style={`--reveal-delay: ${(i % 4) * 0.07}s`}
           >
+            <span class="service__diamond" aria-hidden="true">◆</span>
             <span class="service__num">{String(i + 1).padStart(2, '0')}</span>
             <h3 class="service__title">{service.title}</h3>
             <p class="service__summary">{service.summary}</p>
@@ -41,11 +42,21 @@ import { site } from '../content/site';
 <style>
   .services__head {
     max-width: 52rem;
-    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+    margin-inline: auto;
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+    text-align: center;
+  }
+
+  .services__head .eyebrow {
+    justify-content: center;
   }
 
   .services__head h2 {
     margin-bottom: 1.25rem;
+  }
+
+  .services__head .lede {
+    margin-inline: auto;
   }
 
   .services__grid {
@@ -54,27 +65,28 @@ import { site } from '../content/site';
     padding: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
-    gap: 1.1rem;
+    gap: 1.4rem;
   }
 
   .service {
     position: relative;
-    padding: clamp(1.5rem, 3vw, 2rem);
+    padding: clamp(1.75rem, 3vw, 2.25rem);
     display: flex;
     flex-direction: column;
+    text-align: center;
     overflow: hidden;
-    transition: transform 0.25s ease, border-color 0.3s ease;
+    transition: transform 0.25s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     will-change: transform;
   }
 
-  /* Блик, следующий за курсором (координаты задаёт motion.ts). */
+  /* Мягкий золотой отблеск за курсором (координаты задаёт motion.ts). */
   .service::before {
     content: '';
     position: absolute;
     inset: 0;
     background: radial-gradient(
-      220px circle at var(--px, 50%) var(--py, 50%),
-      rgba(245, 178, 99, 0.14),
+      230px circle at var(--px, 50%) var(--py, 50%),
+      rgba(201, 168, 106, 0.13),
       transparent 65%
     );
     opacity: 0;
@@ -83,57 +95,57 @@ import { site } from '../content/site';
   }
 
   .service:hover {
-    border-color: rgba(245, 178, 99, 0.35);
+    border-color: var(--gold);
+    box-shadow: 0 0 30px rgba(201, 168, 106, 0.12);
   }
 
   .service:hover::before {
     opacity: 1;
   }
 
+  .service__diamond {
+    color: var(--gold);
+    font-size: 0.7rem;
+    margin-bottom: 1.1rem;
+  }
+
   .service__num {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.3rem;
     font-family: var(--font-display);
-    font-weight: 300;
-    font-size: 0.8rem;
-    letter-spacing: 0.12em;
-    background: var(--grad-accent);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    font-size: 0.95rem;
+    color: var(--ink-3);
+    letter-spacing: 0.1em;
   }
 
   .service__title {
-    margin: 0.8rem 0 0.85rem;
+    margin-bottom: 0.8rem;
   }
 
   .service__summary {
     color: var(--ink-2);
-    font-size: 0.95rem;
-    margin-bottom: 1.25rem;
+    font-size: 0.92rem;
+    margin-bottom: 1.3rem;
   }
 
   .service__points {
     list-style: none;
     margin: auto 0 0;
-    padding: 0;
+    padding: 1.1rem 0 0;
+    border-top: 1px solid var(--line);
     display: grid;
-    gap: 0.5rem;
-    font-size: 0.88rem;
+    gap: 0.45rem;
+    font-size: 0.85rem;
     color: var(--ink-2);
   }
 
-  .service__points li {
-    position: relative;
-    padding-left: 1.1rem;
-  }
-
-  .service__points li::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 6px;
-    height: 1px;
-    background: var(--glow-a);
-    box-shadow: 0 0 6px rgba(245, 178, 99, 0.9);
+  @media (max-width: 640px) {
+    .services__head {
+      text-align: left;
+    }
+    .services__head .eyebrow {
+      justify-content: flex-start;
+    }
   }
 </style>

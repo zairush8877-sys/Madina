@@ -3,33 +3,33 @@ import { site } from '../content/site';
 ---
 
 <section class="section contacts" id="contacts">
-  <div class="contacts__glow" aria-hidden="true"></div>
+  <div class="contacts__sun" aria-hidden="true"></div>
   <div class="wrap contacts__inner">
-    <div class="contacts__text">
-      <p class="eyebrow reveal">{site.contacts.eyebrow}</p>
-      <h2 class="reveal" style="--reveal-delay: 0.06s">{site.contacts.title}</h2>
-      <p class="contacts__lede reveal" style="--reveal-delay: 0.12s">
-        {site.contacts.lede}
-      </p>
-    </div>
+    <p class="eyebrow contacts__eyebrow reveal">{site.contacts.eyebrow}</p>
+    <h2 class="reveal" style="--reveal-delay: 0.06s">{site.contacts.title}</h2>
+    <p class="contacts__lede reveal" style="--reveal-delay: 0.12s">
+      {site.contacts.lede}
+    </p>
 
-    <div class="contacts__actions glass reveal" style="--reveal-delay: 0.15s">
+    <div class="contacts__actions reveal" style="--reveal-delay: 0.18s">
       <a
-        class="btn"
+        class="btn btn--solid"
         href={site.contacts.whatsappHref}
         target="_blank"
         rel="noopener"
       >
         {site.contacts.whatsappLabel}
       </a>
-      <a class="btn btn--ghost" href={`tel:${site.contacts.phoneHref}`}>
+      <a class="btn" href={`tel:${site.contacts.phoneHref}`}>
         {site.contacts.phoneLabel}
       </a>
-      <p class="contacts__meta">
-        {site.contacts.preferred}<br />
-        {site.contacts.areaServed}
-      </p>
     </div>
+
+    <p class="contacts__meta reveal" style="--reveal-delay: 0.24s">
+      {site.contacts.preferred}
+      <span class="diamond" aria-hidden="true">◆</span>
+      {site.contacts.areaServed}
+    </p>
   </div>
 </section>
 
@@ -37,50 +37,79 @@ import { site } from '../content/site';
   .contacts {
     position: relative;
     overflow: hidden;
+    text-align: center;
   }
 
-  .contacts__glow {
+  /* Лучи из-за нижней кромки — перекликается с первым экраном. */
+  .contacts__sun {
     position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(50% 70% at 50% 110%, rgba(226, 96, 123, 0.16), transparent 70%),
-      radial-gradient(35% 50% at 15% 0%, rgba(127, 90, 240, 0.1), transparent 70%);
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(900px, 100vw);
+    height: 300px;
+    border-radius: 450px 450px 0 0;
+    background: conic-gradient(
+      from 270deg at 50% 100%,
+      transparent 0deg 5deg,
+      var(--gold-faint) 5deg 6deg,
+      transparent 6deg 13deg,
+      var(--gold-faint) 13deg 14deg,
+      transparent 14deg 21deg,
+      var(--gold-faint) 21deg 22deg,
+      transparent 22deg 29deg,
+      var(--gold-faint) 29deg 30deg,
+      transparent 30deg 37deg,
+      var(--gold-faint) 37deg 38deg,
+      transparent 38deg 45deg,
+      var(--gold-faint) 45deg 46deg,
+      transparent 46deg 53deg,
+      var(--gold-faint) 53deg 54deg,
+      transparent 54deg 61deg,
+      var(--gold-faint) 61deg 62deg,
+      transparent 62deg 69deg,
+      var(--gold-faint) 69deg 70deg,
+      transparent 70deg 77deg,
+      var(--gold-faint) 77deg 78deg,
+      transparent 78deg 85deg,
+      var(--gold-faint) 85deg 86deg,
+      transparent 86deg 90deg
+    );
     pointer-events: none;
   }
 
   .contacts__inner {
     position: relative;
-    display: grid;
-    grid-template-columns: 1.15fr 0.85fr;
-    gap: clamp(2rem, 6vw, 4rem);
-    align-items: center;
+  }
+
+  .contacts__eyebrow {
+    justify-content: center;
   }
 
   .contacts__lede {
-    margin-top: 1.5rem;
+    margin: 1.5rem auto 0;
     color: var(--ink-2);
-    max-width: 46ch;
-    font-size: clamp(1.02rem, 1rem + 0.3vw, 1.15rem);
+    max-width: 52ch;
+    font-size: clamp(1rem, 0.97rem + 0.3vw, 1.12rem);
   }
 
   .contacts__actions {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1rem;
-    padding: clamp(1.75rem, 3vw, 2.5rem);
+    margin-top: 2.5rem;
   }
 
   .contacts__meta {
-    margin-top: 0.5rem;
-    font-size: 0.88rem;
+    margin-top: 2.25rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
     color: var(--ink-3);
-    line-height: 1.6;
   }
 
-  @media (max-width: 860px) {
-    .contacts__inner {
-      grid-template-columns: 1fr;
-    }
+  .contacts__meta .diamond {
+    margin-inline: 0.8rem;
+    font-size: 0.6rem;
   }
 </style>

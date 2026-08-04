@@ -3,22 +3,22 @@ import { Picture } from 'astro:assets';
 import { site } from '../content/site';
 import heroPortrait from '../assets/photos/portrait-garden-01.jpg';
 
+// «Интерьеры, в которых\nудобно жить» → последняя строка золотым курсивом.
 const titleLines = site.hero.title.split('\n');
 ---
 
 <section class="hero" id="top">
-  <div class="hero__aurora" aria-hidden="true"></div>
-  <div class="hero__grid" aria-hidden="true"></div>
+  <div class="hero__sun" aria-hidden="true"></div>
 
   <div class="wrap hero__inner">
     <div class="hero__text">
-      <p class="eyebrow reveal">{site.hero.kicker}</p>
+      <p class="eyebrow eyebrow--start reveal">{site.hero.kicker}</p>
       <h1 class="reveal" style="--reveal-delay: 0.08s">
         {
           titleLines.map((line, i) => (
             <>
               {i > 0 && <br />}
-              {i === titleLines.length - 1 ? <span class="accent">{line}</span> : line}
+              {i === titleLines.length - 1 ? <em class="accent">{line}</em> : line}
             </>
           ))
         }
@@ -35,17 +35,17 @@ const titleLines = site.hero.title.split('\n');
         >
           {site.hero.primaryCta}
         </a>
-        <a class="btn btn--ghost" href="#services">{site.hero.secondaryCta}</a>
+        <a class="btn btn--muted" href="#services">{site.hero.secondaryCta}</a>
       </div>
     </div>
 
-    <div class="hero__figure reveal" style="--reveal-delay: 0.2s">
-      <div class="hero__halo" aria-hidden="true"></div>
+    <div class="hero__figure reveal" style="--reveal-delay: 0.18s">
+      <span class="hero__finial" aria-hidden="true"></span>
       <Picture
         src={heroPortrait}
         alt={`${site.person.fullName} — ${site.person.role.toLowerCase()}`}
         widths={[420, 700, 900]}
-        sizes="(max-width: 900px) 78vw, 36vw"
+        sizes="(max-width: 900px) 76vw, 34vw"
         formats={['avif', 'webp']}
         loading="eager"
         fetchpriority="high"
@@ -57,48 +57,62 @@ const titleLines = site.hero.title.split('\n');
 <style>
   .hero {
     position: relative;
-    padding-block: clamp(3.5rem, 9vw, 7.5rem);
+    padding-block: clamp(3.5rem, 9vw, 7rem) clamp(4.5rem, 11vw, 9rem);
     overflow: hidden;
   }
 
-  /* Живой аврора-фон: два размытых пятна медленно дрейфуют. */
-  .hero__aurora {
+  /* Солнечные лучи из нижнего центра — фирменный мотив ар-деко. */
+  .hero__sun {
     position: absolute;
-    inset: -20%;
-    background:
-      radial-gradient(38% 42% at 22% 30%, rgba(127, 90, 240, 0.2), transparent 70%),
-      radial-gradient(34% 38% at 78% 62%, rgba(226, 96, 123, 0.17), transparent 70%),
-      radial-gradient(30% 34% at 55% 18%, rgba(245, 178, 99, 0.12), transparent 70%);
-    animation: aurora 16s ease-in-out infinite alternate;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(760px, 90vw);
+    height: 340px;
+    border-radius: 380px 380px 0 0;
+    background: conic-gradient(
+      from 270deg at 50% 100%,
+      transparent 0deg 6deg,
+      var(--gold-faint) 6deg 7deg,
+      transparent 7deg 16deg,
+      var(--gold-faint) 16deg 17deg,
+      transparent 17deg 26deg,
+      var(--gold-faint) 26deg 27deg,
+      transparent 27deg 36deg,
+      var(--gold-faint) 36deg 37deg,
+      transparent 37deg 46deg,
+      var(--gold-faint) 46deg 47deg,
+      transparent 47deg 56deg,
+      var(--gold-faint) 56deg 57deg,
+      transparent 57deg 66deg,
+      var(--gold-faint) 66deg 67deg,
+      transparent 67deg 76deg,
+      var(--gold-faint) 76deg 77deg,
+      transparent 77deg 86deg,
+      var(--gold-faint) 86deg 87deg,
+      transparent 87deg 90deg
+    );
+    opacity: 0;
+    animation: sunrise 2.2s var(--ease-out) 0.4s forwards;
     pointer-events: none;
   }
 
-  @keyframes aurora {
+  @keyframes sunrise {
     from {
-      transform: translate3d(-2%, -1%, 0) scale(1);
+      opacity: 0;
+      transform: translateX(-50%) translateY(40px);
     }
     to {
-      transform: translate3d(2%, 2%, 0) scale(1.08);
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
-  }
-
-  /* Тонкая перспективная сетка — намёк на чертёж. */
-  .hero__grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--line) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line) 1px, transparent 1px);
-    background-size: 72px 72px;
-    mask-image: radial-gradient(75% 65% at 50% 40%, rgb(0 0 0 / 0.5), transparent);
-    pointer-events: none;
   }
 
   .hero__inner {
     position: relative;
     display: grid;
-    grid-template-columns: 1.08fr 0.92fr;
-    gap: clamp(2rem, 6vw, 5rem);
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(2.5rem, 7vw, 5.5rem);
     align-items: center;
   }
 
@@ -110,61 +124,56 @@ const titleLines = site.hero.title.split('\n');
     display: flex;
     flex-wrap: wrap;
     gap: 0.9rem;
-    margin-top: 2.4rem;
+    margin-top: 2.5rem;
   }
 
+  /* Портрет в арке с двойной золотой рамкой и «шпилем». */
   .hero__figure {
     position: relative;
-    animation: float 7s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%,
-    100% {
-      translate: 0 0;
-    }
-    50% {
-      translate: 0 -12px;
-    }
-  }
-
-  /* Свечение позади портрета. */
-  .hero__halo {
-    position: absolute;
-    inset: -12%;
-    background: radial-gradient(
-      50% 50% at 50% 50%,
-      rgba(226, 96, 123, 0.3),
-      transparent 72%
-    );
-    filter: blur(30px);
-    z-index: 0;
+    justify-self: center;
+    width: min(21rem, 100%);
   }
 
   .hero__figure :global(img) {
-    position: relative;
-    z-index: 1;
     width: 100%;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 3 / 4.2;
     object-fit: cover;
-    object-position: center 22%;
-    border-radius: var(--radius);
-    border: 1px solid rgba(244, 241, 236, 0.16);
+    object-position: center 20%;
+    border-radius: 50% 50% 0 0 / 38% 38% 0 0;
+    border: 1px solid var(--gold);
+    padding: 12px;
+    background: var(--bg);
   }
 
-  /* Градиентный уголок-рамка. */
+  /* Внешняя арка. */
   .hero__figure::after {
     content: '';
     position: absolute;
-    inset: -14px;
-    border-radius: calc(var(--radius) + 12px);
-    padding: 1px;
-    background: var(--grad-accent);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.55;
+    inset: -24px -24px 0;
+    border: 1px solid var(--gold-soft);
+    border-bottom: 0;
+    border-radius: 50% 50% 0 0 / 36% 36% 0 0;
     pointer-events: none;
+  }
+
+  /* Вертикальный «шпиль» над аркой. */
+  .hero__finial {
+    position: absolute;
+    left: 50%;
+    top: -66px;
+    width: 1px;
+    height: 42px;
+    background: var(--gold);
+  }
+
+  .hero__finial::after {
+    content: '◆';
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--gold);
+    font-size: 9px;
   }
 
   @media (max-width: 900px) {
@@ -173,16 +182,8 @@ const titleLines = site.hero.title.split('\n');
     }
     .hero__figure {
       order: -1;
-      max-width: 21rem;
-      margin-inline: auto;
-      width: 100%;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero__aurora,
-    .hero__figure {
-      animation: none;
+      width: min(17rem, 88%);
+      margin-top: 3rem;
     }
   }
 </style>

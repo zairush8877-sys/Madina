@@ -5,7 +5,7 @@ import { site } from '../content/site';
 <section class="section approach-section" id="approach">
   <div class="wrap">
     <header class="approach__head">
-      <p class="eyebrow reveal">{site.approach.eyebrow}</p>
+      <p class="eyebrow eyebrow--start reveal">{site.approach.eyebrow}</p>
       <h2 class="reveal" style="--reveal-delay: 0.06s">{site.approach.title}</h2>
       <p class="lede reveal" style="--reveal-delay: 0.12s">{site.approach.lede}</p>
     </header>
@@ -18,6 +18,7 @@ import { site } from '../content/site';
             style={`--reveal-delay: ${(i % 2) * 0.08}s`}
           >
             <span class="approach__beam" aria-hidden="true" />
+            <span class="approach__index">{String(i + 1).padStart(2, '0')}</span>
             <h3>{item.title}</h3>
             <p>{item.body}</p>
           </article>
@@ -29,9 +30,7 @@ import { site } from '../content/site';
 
 <style>
   .approach-section {
-    background:
-      radial-gradient(45% 55% at 8% 90%, rgba(226, 96, 123, 0.07), transparent 70%),
-      var(--bg-2);
+    background: var(--bg-2);
     border-block: 1px solid var(--line);
   }
 
@@ -47,15 +46,15 @@ import { site } from '../content/site';
   .approach__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-    gap: clamp(1.75rem, 4vw, 3rem);
+    gap: clamp(2rem, 4vw, 3.5rem);
   }
 
   .approach__item {
     position: relative;
-    padding-top: 1.5rem;
+    padding-top: 1.6rem;
   }
 
-  /* Градиентная линия, «зажигающаяся» при появлении блока.
+  /* Золотая линия, «зажигающаяся» при появлении блока.
      Свёрнута только при работающем JS — без него видна сразу. */
   .approach__beam {
     position: absolute;
@@ -63,13 +62,23 @@ import { site } from '../content/site';
     left: 0;
     height: 1px;
     width: 100%;
-    background: var(--grad-accent);
+    background: linear-gradient(90deg, var(--gold), var(--gold-faint));
     transform-origin: left;
-    transition: transform 1.1s var(--ease-out) 0.25s;
+    transition: transform 1.2s var(--ease-out) 0.25s;
   }
 
   :global(.js) .approach__item:not(.is-visible) .approach__beam {
     transform: scaleX(0);
+  }
+
+  .approach__index {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--gold-soft);
+    line-height: 1;
+    display: block;
+    margin-bottom: 0.9rem;
   }
 
   .approach__item h3 {
@@ -78,12 +87,6 @@ import { site } from '../content/site';
 
   .approach__item p {
     color: var(--ink-2);
-    font-size: 0.96rem;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .approach__beam {
-      transform: scaleX(1);
-    }
+    font-size: 0.95rem;
   }
 </style>
