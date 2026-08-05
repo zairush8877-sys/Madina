@@ -1,13 +1,21 @@
 ---
 import { site } from '../content/site';
+
+// Каждой карточке — своя фигура-маркер одного из трёх основных цветов.
+const shapeKinds = ['circle', 'square', 'triangle'] as const;
 ---
 
-<section class="section" id="services">
+<section class="section services-section" id="services">
+  <div class="shapes" aria-hidden="true">
+    <span class="shape shape--ring svc-sh1" data-depth="0.22"></span>
+    <span class="shape svc-sh2" data-depth="0.45"></span>
+  </div>
+
   <div class="wrap">
     <header class="services__head">
       <p class="eyebrow reveal">Услуги</p>
       <h2 class="reveal" style="--reveal-delay: 0.06s">
-        От первого чертежа<br />до <em class="accent">последней ручки</em>
+        От первого чертежа<br />до <span class="accent-red">последней ручки</span>
       </h2>
       <p class="lede reveal" style="--reveal-delay: 0.12s">
         Можно взять только проект, а можно передать мне весь объект — вместе
@@ -19,11 +27,14 @@ import { site } from '../content/site';
       {
         site.services.map((service, i) => (
           <li
-            class="service panel reveal"
+            class="service reveal"
             data-tilt
             style={`--reveal-delay: ${(i % 4) * 0.07}s`}
           >
-            <span class="service__diamond" aria-hidden="true">◆</span>
+            <span
+              class={`service__shape service__shape--${shapeKinds[i % 3]}`}
+              aria-hidden="true"
+            />
             <span class="service__num">{String(i + 1).padStart(2, '0')}</span>
             <h3 class="service__title">{service.title}</h3>
             <p class="service__summary">{service.summary}</p>
@@ -40,23 +51,35 @@ import { site } from '../content/site';
 </section>
 
 <style>
-  .services__head {
-    max-width: 52rem;
-    margin-inline: auto;
-    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
-    text-align: center;
+  .services-section {
+    overflow: hidden;
   }
 
-  .services__head .eyebrow {
-    justify-content: center;
+  .svc-sh1 {
+    width: 380px;
+    height: 380px;
+    border: 2px dashed var(--blue);
+    bottom: -140px;
+    right: -120px;
+    animation: spin 56s linear infinite;
+  }
+
+  .svc-sh2 {
+    width: 90px;
+    height: 20px;
+    background: var(--yellow);
+    top: 12%;
+    right: 4%;
+    animation: drift 16s ease-in-out infinite;
+  }
+
+  .services__head {
+    max-width: 54rem;
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
   }
 
   .services__head h2 {
     margin-bottom: 1.25rem;
-  }
-
-  .services__head .lede {
-    margin-inline: auto;
   }
 
   .services__grid {
@@ -66,57 +89,65 @@ import { site } from '../content/site';
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
     gap: 1.4rem;
+    position: relative;
   }
 
   .service {
     position: relative;
-    padding: clamp(1.75rem, 3vw, 2.25rem);
+    padding: 1.9rem 1.7rem;
     display: flex;
     flex-direction: column;
-    text-align: center;
-    overflow: hidden;
-    transition: transform 0.25s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    transition: transform 0.2s ease, box-shadow 0.25s var(--ease-out);
     will-change: transform;
   }
 
-  /* Мягкий золотой отблеск за курсором (координаты задаёт motion.ts). */
-  .service::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      230px circle at var(--px, 50%) var(--py, 50%),
-      rgba(201, 168, 106, 0.13),
-      transparent 65%
-    );
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    pointer-events: none;
-  }
-
   .service:hover {
-    border-color: var(--gold);
-    box-shadow: 0 0 30px rgba(201, 168, 106, 0.12);
+    box-shadow: 8px 8px 0 0 var(--ink);
   }
 
-  .service:hover::before {
-    opacity: 1;
+  /* Фигура-маркер вращается/крутится при наведении на карточку. */
+  .service__shape {
+    display: block;
+    margin-bottom: 1.2rem;
+    transition: rotate 0.6s var(--ease-out), scale 0.3s ease;
   }
 
-  .service__diamond {
-    color: var(--gold);
-    font-size: 0.7rem;
-    margin-bottom: 1.1rem;
+  .service__shape--circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--red);
+  }
+
+  .service__shape--square {
+    width: 38px;
+    height: 38px;
+    background: var(--yellow);
+  }
+
+  .service__shape--triangle {
+    width: 0;
+    height: 0;
+    border-left: 22px solid transparent;
+    border-right: 22px solid transparent;
+    border-bottom: 38px solid var(--blue);
+    background: none;
+  }
+
+  .service:hover .service__shape {
+    rotate: 180deg;
+    scale: 1.12;
   }
 
   .service__num {
     position: absolute;
-    top: 1.1rem;
-    right: 1.3rem;
+    top: 1.2rem;
+    right: 1.4rem;
     font-family: var(--font-display);
-    font-size: 0.95rem;
+    font-size: 0.78rem;
     color: var(--ink-3);
-    letter-spacing: 0.1em;
   }
 
   .service__title {
@@ -125,7 +156,7 @@ import { site } from '../content/site';
 
   .service__summary {
     color: var(--ink-2);
-    font-size: 0.92rem;
+    font-size: 0.93rem;
     margin-bottom: 1.3rem;
   }
 
@@ -133,19 +164,26 @@ import { site } from '../content/site';
     list-style: none;
     margin: auto 0 0;
     padding: 1.1rem 0 0;
-    border-top: 1px solid var(--line);
+    border-top: 2px solid var(--ink);
     display: grid;
     gap: 0.45rem;
-    font-size: 0.85rem;
+    font-size: 0.86rem;
     color: var(--ink-2);
   }
 
-  @media (max-width: 640px) {
-    .services__head {
-      text-align: left;
-    }
-    .services__head .eyebrow {
-      justify-content: flex-start;
-    }
+  .service__points li {
+    position: relative;
+    padding-left: 1.15rem;
+  }
+
+  .service__points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.52em;
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    rotate: 45deg;
   }
 </style>

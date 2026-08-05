@@ -1,26 +1,26 @@
 /* ---------------------------------------------------------------
-   Design tokens — art deco
-   Almost-black background, antique gold lines, diamond lattice,
-   arches and sunburst rays. Serif display, spaced small caps.
+   Design tokens — kinetic bauhaus
+   Cream paper, ink black, primary red / blue / yellow. Geometric
+   shapes are alive: they drift, spin and follow the cursor.
    --------------------------------------------------------------- */
 :root {
-  --bg: #12100d;
-  --bg-2: #171410;
-  --ink: #efe9dd;
-  --ink-2: #b8ad97;
-  --ink-3: #857c69;
-  --gold: #c9a86a;
-  --gold-soft: rgba(201, 168, 106, 0.4);
-  --gold-faint: rgba(201, 168, 106, 0.14);
-  --line: rgba(201, 168, 106, 0.28);
+  --paper: #f4efe6;
+  --paper-2: #ece5d7;
+  --ink: #17150f;
+  --ink-2: #4d4a42;
+  --ink-3: #8b8578;
+  --red: #e2452d;
+  --blue: #2957a4;
+  --yellow: #f0b428;
+  --line: #17150f;
 
-  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-display: 'Unbounded', 'Arial Black', sans-serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
 
-  --wrap: 1180px;
+  --wrap: 1200px;
   --gutter: clamp(1.25rem, 5vw, 3.5rem);
-  --section-y: clamp(4rem, 10vw, 7.5rem);
+  --section-y: clamp(4rem, 9vw, 7rem);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -37,15 +37,11 @@ html {
 
 body {
   margin: 0;
-  background: var(--bg);
-  /* Едва заметная ромбовидная решётка по всему фону. */
-  background-image:
-    repeating-linear-gradient(45deg, transparent 0 44px, rgba(201, 168, 106, 0.035) 44px 45px),
-    repeating-linear-gradient(-45deg, transparent 0 44px, rgba(201, 168, 106, 0.035) 44px 45px);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: clamp(0.98rem, 0.95rem + 0.15vw, 1.05rem);
-  line-height: 1.8;
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
@@ -65,22 +61,23 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.12;
   margin: 0;
   text-wrap: balance;
+  text-transform: uppercase;
 }
 
 h1 {
-  font-size: clamp(2.6rem, 1.5rem + 4.8vw, 5rem);
+  font-size: clamp(1.9rem, 1rem + 4.2vw, 4rem);
 }
 
 h2 {
-  font-size: clamp(1.9rem, 1.4rem + 2.2vw, 3.1rem);
+  font-size: clamp(1.3rem, 0.95rem + 1.9vw, 2.3rem);
 }
 
 h3 {
-  font-size: clamp(1.35rem, 1.2rem + 0.6vw, 1.7rem);
+  font-size: clamp(0.95rem, 0.88rem + 0.4vw, 1.12rem);
 }
 
 p {
@@ -92,13 +89,9 @@ p:last-child {
   margin-bottom: 0;
 }
 
-em {
-  font-style: italic;
-}
-
 ::selection {
-  background: var(--gold);
-  color: #12100d;
+  background: var(--yellow);
+  color: var(--ink);
 }
 
 /* --------------------------------------------------------------- */
@@ -115,53 +108,27 @@ em {
   padding-block: var(--section-y);
 }
 
-/* Надзаголовок с тире по бокам — фирменный знак стиля. */
 .eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  font-size: 0.66rem;
-  letter-spacing: 0.42em;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--gold);
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--ink);
+  background: var(--paper);
   margin: 0 0 1.5rem;
 }
 
-.eyebrow::before,
-.eyebrow::after {
-  content: '';
-  height: 1px;
-  width: 2rem;
-  background: var(--gold-soft);
-}
-
-.eyebrow--start::after {
-  display: none;
-}
-
 .lede {
-  font-size: clamp(1rem, 0.97rem + 0.3vw, 1.15rem);
+  font-size: clamp(1rem, 0.97rem + 0.3vw, 1.16rem);
   color: var(--ink-2);
-  max-width: 60ch;
+  max-width: 58ch;
 }
 
-/* Золотой курсивный акцент в заголовках. */
-.accent {
-  font-style: italic;
-  color: var(--gold);
-}
-
-/* Карточка с золотой рамкой и мягким свечением сверху. */
-.panel {
-  background: linear-gradient(180deg, var(--gold-faint), transparent 42%);
-  border: 1px solid var(--line);
-}
-
-/* Ромб-маркер. */
-.diamond {
-  display: inline-block;
-  color: var(--gold);
-  font-size: 0.8em;
+.accent-red {
+  color: var(--red);
 }
 
 /* Buttons ------------------------------------------------------- */
@@ -172,62 +139,107 @@ em {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 1.05rem 2.6rem;
-  border: 1px solid var(--gold);
-  background: transparent;
-  color: var(--gold);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.3em;
+  padding: 1.05rem 2.3rem;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Двойная рамка. */
-.btn::after {
-  content: '';
-  position: absolute;
-  inset: 4px;
-  border: 1px solid var(--gold-soft);
-  transition: inherit;
-  pointer-events: none;
+  box-shadow: 4px 4px 0 0 var(--red);
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out),
+    background-color 0.2s ease, color 0.2s ease;
 }
 
 .btn:hover,
 .btn:focus-visible {
-  background: var(--gold);
-  color: #12100d;
-  box-shadow: 0 0 34px rgba(201, 168, 106, 0.28);
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 0 var(--red);
 }
 
-.btn--solid {
-  background: var(--gold);
-  color: #12100d;
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 0 var(--red);
 }
 
-.btn--solid:hover,
-.btn--solid:focus-visible {
-  background: #dcbf85;
-  border-color: #dcbf85;
-}
-
-.btn--muted {
-  border-color: var(--line);
-  color: var(--ink-2);
-}
-
-.btn--muted::after {
-  border-color: transparent;
-}
-
-.btn--muted:hover,
-.btn--muted:focus-visible {
+.btn--ghost {
   background: transparent;
-  color: var(--gold);
-  border-color: var(--gold);
-  box-shadow: none;
+  color: var(--ink);
+  box-shadow: 4px 4px 0 0 var(--yellow);
+}
+
+.btn--ghost:hover,
+.btn--ghost:focus-visible {
+  box-shadow: 7px 7px 0 0 var(--yellow);
+}
+
+/* Floating geometric shapes ------------------------------------- */
+
+/* Общий слой с фигурами: absolute внутри section (overflow скрыт
+   на самой секции). Каждая фигура дрейфует своим keyframe'ом,
+   а [data-depth] дополнительно смещается за курсором (motion.ts). */
+.shapes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.shape {
+  position: absolute;
+  will-change: transform;
+}
+
+.shape--circle {
+  border-radius: 50%;
+}
+
+.shape--ring {
+  border-radius: 50%;
+  background: transparent !important;
+}
+
+/* Непрерывные движения. Разные длительности → живой, несинхронный фон. */
+@keyframes drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  25% {
+    translate: 3% -6%;
+  }
+  50% {
+    translate: -2% 4%;
+  }
+  75% {
+    translate: -5% -3%;
+  }
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes spin-back {
+  to {
+    rotate: -360deg;
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 -18px;
+  }
 }
 
 /* Scroll-reveal ------------------------------------------------- */
@@ -236,8 +248,8 @@ em {
    (класс .js ставит инлайн-скрипт в Base.astro) — иначе контент виден сразу. */
 .js .reveal {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 1s var(--ease-out), transform 1s var(--ease-out);
+  transform: translateY(28px);
+  transition: opacity 0.85s var(--ease-out), transform 0.85s var(--ease-out);
   transition-delay: var(--reveal-delay, 0s);
 }
 
@@ -249,7 +261,7 @@ em {
 /* Focus & a11y -------------------------------------------------- */
 
 :where(a, button, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 3px solid var(--blue);
   outline-offset: 3px;
 }
 
@@ -257,8 +269,8 @@ em {
   position: absolute;
   left: -9999px;
   top: 0;
-  background: var(--gold);
-  color: #12100d;
+  background: var(--ink);
+  color: var(--paper);
   padding: 0.75rem 1.25rem;
   z-index: 100;
 }
@@ -279,7 +291,7 @@ em {
   border: 0;
 }
 
-/* Reduced motion ------------------------------------------------ */
+/* Reduced motion: всё замирает, контент остаётся видимым --------- */
 
 @media (prefers-reduced-motion: reduce) {
   html {

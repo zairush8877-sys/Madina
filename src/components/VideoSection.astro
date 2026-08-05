@@ -9,9 +9,17 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
 ---
 
 <section class="section video-section" id="video">
+  <div class="shapes" aria-hidden="true">
+    <span
+      class="shape shape--circle vid-sh1"
+      data-depth="0.35"
+      style="background: var(--red)"></span>
+    <span class="shape vid-sh2" data-depth="0.2"></span>
+  </div>
+
   <div class="wrap video__inner">
     <div class="video__text">
-      <p class="eyebrow eyebrow--start reveal">{site.video.eyebrow}</p>
+      <p class="eyebrow reveal">{site.video.eyebrow}</p>
       <h2 class="reveal" style="--reveal-delay: 0.06s">{site.video.title}</h2>
       {
         site.video.caption && (
@@ -22,8 +30,11 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
       }
     </div>
 
-    <!-- Ролик снят вертикально (9:16) — плеер в арке, как портал. -->
+    <!-- Ролик снят вертикально (9:16) — плеер узкий, как экран телефона. -->
     <div class="video__frame reveal" style="--reveal-delay: 0.1s">
+      <span class="video__orbit" aria-hidden="true">
+        <span class="video__satellite"></span>
+      </span>
       <video
         class="video__player"
         src={videoSrc}
@@ -40,11 +51,30 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
 
 <style>
   .video-section {
-    background: var(--bg-2);
-    border-block: 1px solid var(--line);
+    background: var(--paper-2);
+    border-block: 2px solid var(--ink);
+    overflow: hidden;
+  }
+
+  .vid-sh1 {
+    width: 44px;
+    height: 44px;
+    top: 16%;
+    left: 4%;
+    animation: bob 6.5s ease-in-out infinite;
+  }
+
+  .vid-sh2 {
+    width: 110px;
+    height: 22px;
+    background: var(--blue);
+    bottom: 12%;
+    left: 10%;
+    animation: drift 15s ease-in-out infinite;
   }
 
   .video__inner {
+    position: relative;
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
     gap: clamp(2.5rem, 6vw, 5rem);
@@ -61,20 +91,7 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
     position: relative;
     justify-self: center;
     width: 100%;
-    max-width: 20rem;
-    border: 1px solid var(--gold);
-    border-radius: 50% 50% 0 0 / 24% 24% 0 0;
-    padding: 12px;
-  }
-
-  .video__frame::after {
-    content: '';
-    position: absolute;
-    inset: -14px -14px 0;
-    border: 1px solid var(--gold-soft);
-    border-bottom: 0;
-    border-radius: 50% 50% 0 0 / 24% 24% 0 0;
-    pointer-events: none;
+    max-width: 19rem;
   }
 
   .video__player {
@@ -82,7 +99,29 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
     aspect-ratio: 9 / 16;
     object-fit: cover;
     background: #000;
-    border-radius: 44% 44% 0 0 / 21% 21% 0 0;
+    border: 4px solid var(--ink);
+    box-shadow: 10px 10px 0 0 var(--red);
+  }
+
+  /* Жёлтый «спутник» облетает плеер по пунктирной орбите. */
+  .video__orbit {
+    position: absolute;
+    inset: -40px;
+    border: 2px dashed rgba(23, 21, 15, 0.35);
+    border-radius: 50%;
+    animation: spin-back 24s linear infinite;
+    pointer-events: none;
+  }
+
+  .video__satellite {
+    position: absolute;
+    top: -12px;
+    left: calc(50% - 12px);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--yellow);
+    border: 3px solid var(--paper-2);
   }
 
   @media (max-width: 860px) {
@@ -90,8 +129,8 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
       grid-template-columns: 1fr;
     }
     .video__frame {
-      justify-self: start;
-      max-width: 17rem;
+      max-width: 16rem;
+      margin-inline: auto;
     }
   }
 </style>
