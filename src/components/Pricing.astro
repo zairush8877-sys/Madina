@@ -1,8 +1,15 @@
 ---
 import { site } from '../content/site';
+
+const accents = ['var(--red)', 'var(--yellow)', 'var(--blue)'];
 ---
 
-<section class="section" id="pricing">
+<section class="section pricing-section" id="pricing">
+  <div class="shapes" aria-hidden="true">
+    <span class="shape pr-sh1" data-depth="0.4"></span>
+    <span class="shape shape--ring pr-sh2" data-depth="0.2"></span>
+  </div>
+
   <div class="wrap">
     <header class="pricing__head">
       <p class="eyebrow reveal">{site.pricing.eyebrow}</p>
@@ -13,9 +20,9 @@ import { site } from '../content/site';
       {
         site.pricing.items.map((item, i) => (
           <article
-            class="price panel reveal"
+            class="price reveal"
             data-tilt
-            style={`--reveal-delay: ${i * 0.08}s`}
+            style={`--reveal-delay: ${i * 0.08}s; --price-accent: ${accents[i % 3]}`}
           >
             <h3 class="price__title">{item.title}</h3>
             <p class="price__amount">
@@ -23,7 +30,6 @@ import { site } from '../content/site';
               {item.unit && <span class="price__unit">{item.unit}</span>}
             </p>
             <p class="price__note">{item.note}</p>
-            <span class="price__rule" aria-hidden="true" />
           </article>
         ))
       }
@@ -33,7 +39,7 @@ import { site } from '../content/site';
 
     <div class="pricing__cta-row reveal">
       <a
-        class="btn btn--solid"
+        class="btn"
         href={site.contacts.whatsappHref}
         target="_blank"
         rel="noopener"
@@ -45,18 +51,37 @@ import { site } from '../content/site';
 </section>
 
 <style>
+  .pricing-section {
+    overflow: hidden;
+  }
+
+  .pr-sh1 {
+    width: 0;
+    height: 0;
+    border-left: 70px solid transparent;
+    border-right: 70px solid transparent;
+    border-bottom: 120px solid var(--yellow);
+    top: 8%;
+    right: -30px;
+    animation: drift 18s ease-in-out infinite;
+  }
+
+  .pr-sh2 {
+    width: 260px;
+    height: 260px;
+    border: 2px dashed var(--blue);
+    bottom: -90px;
+    left: -70px;
+    animation: spin-back 40s linear infinite;
+  }
+
   .pricing__head {
-    max-width: 52rem;
-    margin-inline: auto;
-    text-align: center;
+    max-width: 54rem;
     margin-bottom: clamp(2.5rem, 6vw, 3.5rem);
   }
 
-  .pricing__head .eyebrow {
-    justify-content: center;
-  }
-
   .pricing__grid {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
     gap: 1.4rem;
@@ -64,47 +89,28 @@ import { site } from '../content/site';
 
   .price {
     position: relative;
-    padding: clamp(2rem, 3vw, 2.5rem);
+    padding: 2rem 1.8rem;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    overflow: hidden;
-    transition: transform 0.25s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    background: var(--paper);
+    border: 3px solid var(--ink);
+    box-shadow: 8px 8px 0 0 var(--price-accent);
+    transition: transform 0.2s ease, box-shadow 0.25s var(--ease-out);
     will-change: transform;
   }
 
-  .price::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      240px circle at var(--px, 50%) var(--py, 50%),
-      rgba(201, 168, 106, 0.13),
-      transparent 65%
-    );
-    opacity: 0;
-    transition: opacity 0.35s ease;
-    pointer-events: none;
-  }
-
   .price:hover {
-    border-color: var(--gold);
-    box-shadow: 0 0 30px rgba(201, 168, 106, 0.12);
-  }
-
-  .price:hover::before {
-    opacity: 1;
+    box-shadow: 12px 12px 0 0 var(--price-accent);
   }
 
   .price__title {
     font-family: var(--font-body);
-    font-size: 0.68rem;
-    letter-spacing: 0.26em;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--ink-3);
-    font-weight: 600;
-    margin-bottom: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 1.3rem;
   }
 
   .price__amount {
@@ -116,9 +122,9 @@ import { site } from '../content/site';
 
   .price__value {
     font-family: var(--font-display);
-    font-size: clamp(2.6rem, 2rem + 2vw, 3.6rem);
+    font-weight: 600;
+    font-size: clamp(2rem, 1.6rem + 1.6vw, 2.8rem);
     line-height: 1;
-    color: var(--gold);
   }
 
   .price__unit {
@@ -129,14 +135,7 @@ import { site } from '../content/site';
   .price__note {
     font-size: 0.92rem;
     color: var(--ink-2);
-    margin: 0 0 1.25rem;
-  }
-
-  .price__rule {
-    width: 3rem;
-    height: 1px;
-    background: var(--gold);
-    margin-top: auto;
+    margin: 0;
   }
 
   .pricing__footnote {
@@ -144,12 +143,9 @@ import { site } from '../content/site';
     font-size: 0.92rem;
     color: var(--ink-3);
     max-width: 48rem;
-    margin-inline: auto;
-    text-align: center;
   }
 
   .pricing__cta-row {
     margin-top: 2.25rem;
-    text-align: center;
   }
 </style>

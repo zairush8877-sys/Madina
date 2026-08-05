@@ -3,22 +3,38 @@ import { Picture } from 'astro:assets';
 import { site } from '../content/site';
 import heroPortrait from '../assets/photos/portrait-garden-01.jpg';
 
-// «Интерьеры, в которых\nудобно жить» → последняя строка золотым курсивом.
 const titleLines = site.hero.title.split('\n');
 ---
 
 <section class="hero" id="top">
-  <div class="hero__sun" aria-hidden="true"></div>
+  <!-- Живые фигуры: дрейфуют сами по себе и плывут за курсором. -->
+  <div class="shapes" aria-hidden="true">
+    <span
+      class="shape shape--circle hero-sh1"
+      data-depth="0.35"
+      style="background: var(--yellow)"></span>
+    <span class="shape shape--ring hero-sh2" data-depth="0.2"></span>
+    <span class="shape hero-sh3" data-depth="0.5"></span>
+    <span
+      class="shape shape--circle hero-sh4"
+      data-depth="0.7"
+      style="background: var(--red)"></span>
+    <span class="shape hero-sh5" data-depth="0.28"></span>
+  </div>
 
   <div class="wrap hero__inner">
     <div class="hero__text">
-      <p class="eyebrow eyebrow--start reveal">{site.hero.kicker}</p>
+      <p class="eyebrow reveal">{site.hero.kicker}</p>
       <h1 class="reveal" style="--reveal-delay: 0.08s">
         {
           titleLines.map((line, i) => (
             <>
               {i > 0 && <br />}
-              {i === titleLines.length - 1 ? <em class="accent">{line}</em> : line}
+              {i === titleLines.length - 1 ? (
+                <span class="accent-red">{line}</span>
+              ) : (
+                line
+              )}
             </>
           ))
         }
@@ -35,12 +51,14 @@ const titleLines = site.hero.title.split('\n');
         >
           {site.hero.primaryCta}
         </a>
-        <a class="btn btn--muted" href="#services">{site.hero.secondaryCta}</a>
+        <a class="btn btn--ghost" href="#services">{site.hero.secondaryCta}</a>
       </div>
     </div>
 
     <div class="hero__figure reveal" style="--reveal-delay: 0.18s">
-      <span class="hero__finial" aria-hidden="true"></span>
+      <span class="hero__orbit" aria-hidden="true">
+        <span class="hero__satellite"></span>
+      </span>
       <Picture
         src={heroPortrait}
         alt={`${site.person.fullName} — ${site.person.role.toLowerCase()}`}
@@ -57,61 +75,61 @@ const titleLines = site.hero.title.split('\n');
 <style>
   .hero {
     position: relative;
-    padding-block: clamp(3.5rem, 9vw, 7rem) clamp(4.5rem, 11vw, 9rem);
+    padding-block: clamp(3.5rem, 8vw, 6.5rem);
     overflow: hidden;
   }
 
-  /* Солнечные лучи из нижнего центра — фирменный мотив ар-деко. */
-  .hero__sun {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(760px, 90vw);
+  /* --- фигуры --- */
+  .hero-sh1 {
+    width: 340px;
     height: 340px;
-    border-radius: 380px 380px 0 0;
-    background: conic-gradient(
-      from 270deg at 50% 100%,
-      transparent 0deg 6deg,
-      var(--gold-faint) 6deg 7deg,
-      transparent 7deg 16deg,
-      var(--gold-faint) 16deg 17deg,
-      transparent 17deg 26deg,
-      var(--gold-faint) 26deg 27deg,
-      transparent 27deg 36deg,
-      var(--gold-faint) 36deg 37deg,
-      transparent 37deg 46deg,
-      var(--gold-faint) 46deg 47deg,
-      transparent 47deg 56deg,
-      var(--gold-faint) 56deg 57deg,
-      transparent 57deg 66deg,
-      var(--gold-faint) 66deg 67deg,
-      transparent 67deg 76deg,
-      var(--gold-faint) 76deg 77deg,
-      transparent 77deg 86deg,
-      var(--gold-faint) 86deg 87deg,
-      transparent 87deg 90deg
-    );
-    opacity: 0;
-    animation: sunrise 2.2s var(--ease-out) 0.4s forwards;
-    pointer-events: none;
+    top: -90px;
+    right: 6%;
+    animation: drift 17s ease-in-out infinite;
   }
 
-  @keyframes sunrise {
-    from {
-      opacity: 0;
-      transform: translateX(-50%) translateY(40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+  .hero-sh2 {
+    width: 480px;
+    height: 480px;
+    border: 2px dashed var(--blue);
+    bottom: -190px;
+    left: -140px;
+    animation: spin 50s linear infinite;
   }
 
+  .hero-sh3 {
+    width: 0;
+    height: 0;
+    border-left: 95px solid transparent;
+    border-right: 95px solid transparent;
+    border-bottom: 160px solid var(--blue);
+    bottom: 6%;
+    right: -40px;
+    animation: drift 21s ease-in-out infinite reverse;
+  }
+
+  .hero-sh4 {
+    width: 60px;
+    height: 60px;
+    top: 22%;
+    left: 42%;
+    animation: bob 6s ease-in-out infinite;
+  }
+
+  .hero-sh5 {
+    width: 120px;
+    height: 26px;
+    background: var(--red);
+    top: 62%;
+    left: -30px;
+    animation: drift 14s ease-in-out infinite;
+  }
+
+  /* --- сетка героя --- */
   .hero__inner {
     position: relative;
     display: grid;
-    grid-template-columns: 1.05fr 0.95fr;
+    grid-template-columns: 1.08fr 0.92fr;
     gap: clamp(2.5rem, 7vw, 5.5rem);
     align-items: center;
   }
@@ -123,57 +141,45 @@ const titleLines = site.hero.title.split('\n');
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.9rem;
-    margin-top: 2.5rem;
+    gap: 1.1rem;
+    margin-top: 2.4rem;
   }
 
-  /* Портрет в арке с двойной золотой рамкой и «шпилем». */
   .hero__figure {
     position: relative;
     justify-self: center;
-    width: min(21rem, 100%);
+    width: min(20.5rem, 100%);
   }
 
   .hero__figure :global(img) {
     width: 100%;
-    aspect-ratio: 3 / 4.2;
+    aspect-ratio: 3 / 4;
     object-fit: cover;
     object-position: center 20%;
-    border-radius: 50% 50% 0 0 / 38% 38% 0 0;
-    border: 1px solid var(--gold);
-    padding: 12px;
-    background: var(--bg);
+    border: 4px solid var(--ink);
+    box-shadow: 10px 10px 0 0 var(--yellow);
   }
 
-  /* Внешняя арка. */
-  .hero__figure::after {
-    content: '';
+  /* Орбита со «спутником»: пунктирное кольцо и синий кружок,
+     непрерывно облетающий портрет. */
+  .hero__orbit {
     position: absolute;
-    inset: -24px -24px 0;
-    border: 1px solid var(--gold-soft);
-    border-bottom: 0;
-    border-radius: 50% 50% 0 0 / 36% 36% 0 0;
+    inset: -46px;
+    border: 2px dashed rgba(23, 21, 15, 0.35);
+    border-radius: 50%;
+    animation: spin 28s linear infinite;
     pointer-events: none;
   }
 
-  /* Вертикальный «шпиль» над аркой. */
-  .hero__finial {
+  .hero__satellite {
     position: absolute;
-    left: 50%;
-    top: -66px;
-    width: 1px;
-    height: 42px;
-    background: var(--gold);
-  }
-
-  .hero__finial::after {
-    content: '◆';
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--gold);
-    font-size: 9px;
+    top: -13px;
+    left: calc(50% - 13px);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--blue);
+    border: 3px solid var(--paper);
   }
 
   @media (max-width: 900px) {
@@ -182,8 +188,12 @@ const titleLines = site.hero.title.split('\n');
     }
     .hero__figure {
       order: -1;
-      width: min(17rem, 88%);
-      margin-top: 3rem;
+      width: min(16rem, 82%);
+      margin-inline: auto;
+      margin-top: 1.5rem;
+    }
+    .hero-sh2 {
+      display: none;
     }
   }
 </style>

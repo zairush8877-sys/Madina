@@ -5,7 +5,7 @@ import { site } from '../content/site';
 <header class="site-header">
   <div class="wrap site-header__inner">
     <a class="brand" href="#top">
-      <span class="brand__diamond" aria-hidden="true">◆</span>
+      <span class="brand__dot" aria-hidden="true"></span>
       <span class="brand__name">{site.person.fullName}</span>
     </a>
 
@@ -24,55 +24,58 @@ import { site } from '../content/site';
     position: sticky;
     top: 0;
     z-index: 40;
-    background: rgba(18, 16, 13, 0.82);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+    border-bottom: 2px solid var(--ink);
   }
 
   .site-header__inner {
     display: flex;
     align-items: center;
     gap: clamp(1rem, 4vw, 2.5rem);
-    min-height: 4.4rem;
+    min-height: 4.2rem;
     flex-wrap: wrap;
   }
 
   .brand {
     display: flex;
-    align-items: baseline;
-    gap: 0.6rem;
+    align-items: center;
+    gap: 0.65rem;
     text-decoration: none;
     margin-right: auto;
   }
 
-  .brand__diamond {
-    color: var(--gold);
-    font-size: 0.7rem;
-    animation: glint 4s ease-in-out infinite;
+  /* Красный круг медленно «дышит» — единственный движущийся элемент шапки. */
+  .brand__dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: breathe 3.6s ease-in-out infinite;
   }
 
-  @keyframes glint {
+  @keyframes breathe {
     0%,
     100% {
-      opacity: 0.55;
+      scale: 1;
     }
     50% {
-      opacity: 1;
-      text-shadow: 0 0 10px rgba(201, 168, 106, 0.8);
+      scale: 1.35;
     }
   }
 
   .brand__name {
     font-family: var(--font-display);
-    font-size: 1.3rem;
-    letter-spacing: 0.06em;
+    font-size: 0.86rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
   }
 
   .site-nav {
     display: flex;
-    gap: clamp(0.9rem, 2.2vw, 1.8rem);
-    font-size: 0.68rem;
-    letter-spacing: 0.24em;
+    gap: clamp(0.9rem, 2.2vw, 1.7rem);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
@@ -81,7 +84,7 @@ import { site } from '../content/site';
     text-decoration: none;
     color: var(--ink-2);
     padding-block: 0.4rem;
-    transition: color 0.25s ease;
+    transition: color 0.2s ease;
   }
 
   .site-nav a::after {
@@ -90,14 +93,14 @@ import { site } from '../content/site';
     left: 0;
     right: 100%;
     bottom: 0;
-    height: 1px;
-    background: var(--gold);
-    transition: right 0.35s var(--ease-out);
+    height: 3px;
+    background: var(--red);
+    transition: right 0.3s var(--ease-out);
   }
 
   .site-nav a:hover,
   .site-nav a:focus-visible {
-    color: var(--gold);
+    color: var(--ink);
   }
 
   .site-nav a:hover::after,
@@ -106,23 +109,17 @@ import { site } from '../content/site';
   }
 
   .site-header__phone {
-    font-size: 0.78rem;
-    letter-spacing: 0.14em;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
     text-decoration: none;
     white-space: nowrap;
-    color: var(--gold);
-    transition: text-shadow 0.25s ease;
-  }
-
-  .site-header__phone:hover,
-  .site-header__phone:focus-visible {
-    text-shadow: 0 0 14px rgba(201, 168, 106, 0.7);
+    color: var(--ink);
   }
 
   @media (max-width: 900px) {
     .site-header__inner {
-      padding-block: 0.7rem;
-      row-gap: 0.35rem;
+      padding-block: 0.65rem;
+      row-gap: 0.3rem;
     }
     .site-nav {
       order: 3;

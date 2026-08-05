@@ -1,0 +1,74 @@
+---
+import { site } from '../content/site';
+
+// Бегущая строка из названий услуг — дублируем список дважды,
+// чтобы бесшовно зациклить прокрутку.
+const items = site.services.map((s) => s.title);
+---
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    {
+      [0, 1].map(() => (
+        <span class="marquee__seq">
+          {items.map((t) => (
+            <span class="marquee__item">
+              {t}
+              <span class="marquee__dot" />
+            </span>
+          ))}
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    overflow: hidden;
+    border-block: 2px solid var(--ink);
+    background: var(--yellow);
+    padding-block: 0.85rem;
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+    animation: marquee 26s linear infinite;
+  }
+
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .marquee__seq {
+    display: flex;
+    flex: none;
+  }
+
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.4rem;
+    padding-inline: 0.7rem;
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+
+  .marquee__dot {
+    width: 9px;
+    height: 9px;
+    background: var(--ink);
+    rotate: 45deg;
+  }
+</style>

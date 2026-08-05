@@ -3,9 +3,17 @@ import { site } from '../content/site';
 ---
 
 <section class="section approach-section" id="approach">
+  <div class="shapes" aria-hidden="true">
+    <span
+      class="shape shape--circle app-sh1"
+      data-depth="0.3"
+      style="background: var(--blue)"></span>
+    <span class="shape shape--ring app-sh2" data-depth="0.18"></span>
+  </div>
+
   <div class="wrap">
     <header class="approach__head">
-      <p class="eyebrow eyebrow--start reveal">{site.approach.eyebrow}</p>
+      <p class="eyebrow reveal">{site.approach.eyebrow}</p>
       <h2 class="reveal" style="--reveal-delay: 0.06s">{site.approach.title}</h2>
       <p class="lede reveal" style="--reveal-delay: 0.12s">{site.approach.lede}</p>
     </header>
@@ -30,12 +38,30 @@ import { site } from '../content/site';
 
 <style>
   .approach-section {
-    background: var(--bg-2);
-    border-block: 1px solid var(--line);
+    background: var(--paper-2);
+    border-block: 2px solid var(--ink);
+    overflow: hidden;
+  }
+
+  .app-sh1 {
+    width: 54px;
+    height: 54px;
+    top: 10%;
+    right: 6%;
+    animation: bob 7s ease-in-out infinite;
+  }
+
+  .app-sh2 {
+    width: 340px;
+    height: 340px;
+    border: 2px dashed var(--red);
+    bottom: -140px;
+    left: -110px;
+    animation: spin 48s linear infinite;
   }
 
   .approach__head {
-    max-width: 52rem;
+    max-width: 54rem;
     margin-bottom: clamp(2.5rem, 6vw, 4rem);
   }
 
@@ -44,6 +70,7 @@ import { site } from '../content/site';
   }
 
   .approach__grid {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
     gap: clamp(2rem, 4vw, 3.5rem);
@@ -54,17 +81,22 @@ import { site } from '../content/site';
     padding-top: 1.6rem;
   }
 
-  /* Золотая линия, «зажигающаяся» при появлении блока.
+  /* Цветная линия, «выезжающая» при появлении блока.
      Свёрнута только при работающем JS — без него видна сразу. */
   .approach__beam {
     position: absolute;
     top: 0;
     left: 0;
-    height: 1px;
+    height: 6px;
     width: 100%;
-    background: linear-gradient(90deg, var(--gold), var(--gold-faint));
+    background: linear-gradient(
+      90deg,
+      var(--red) 0 33%,
+      var(--yellow) 33% 66%,
+      var(--blue) 66% 100%
+    );
     transform-origin: left;
-    transition: transform 1.2s var(--ease-out) 0.25s;
+    transition: transform 1s var(--ease-out) 0.2s;
   }
 
   :global(.js) .approach__item:not(.is-visible) .approach__beam {
@@ -73,9 +105,10 @@ import { site } from '../content/site';
 
   .approach__index {
     font-family: var(--font-display);
-    font-size: 2.4rem;
+    font-weight: 600;
+    font-size: 2rem;
     color: transparent;
-    -webkit-text-stroke: 1px var(--gold-soft);
+    -webkit-text-stroke: 2px var(--ink);
     line-height: 1;
     display: block;
     margin-bottom: 0.9rem;
