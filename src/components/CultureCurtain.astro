@@ -1,0 +1,258 @@
+---
+/**
+ * «Шторка» у нижней кромки экрана: чёрный силуэт крыш разных культур
+ * на жёлтой ленте. Крыши медленно едут; при наведении мыши (или тапе)
+ * шторка выдвигается вверх и открывает строку алфавитов мира,
+ * бегущую в обратную сторону.
+ *
+ * Слева направо в силуэте: русская церковь с луковичным куполом,
+ * европейские щипцовые дома, японская пагода, минарет и купол,
+ * китайская крыша с загнутыми углами, кавказская башня, юрта,
+ * скандинавский A-frame.
+ */
+
+const alphabets = [
+  'А Б В Г Д',
+  'A B C D E',
+  'Α Β Γ Δ',
+  'ا ب ت ث',
+  'あ い う え',
+  '한 글',
+  '漢 字',
+  'ა ბ გ დ',
+  'Ա Բ Գ Դ',
+  'א ב ג ד',
+];
+---
+
+<div class="curtain" id="culture-curtain">
+  <button
+    class="curtain__handle"
+    type="button"
+    aria-expanded="false"
+    aria-controls="curtain-body"
+  >
+    <span class="curtain__grip" aria-hidden="true"></span>
+    <span class="visually-hidden">Крыши мира — открыть шторку</span>
+  </button>
+
+  <div class="curtain__body" id="curtain-body">
+    <!-- Лента крыш: два одинаковых SVG подряд для бесшовного цикла. -->
+    <div class="curtain__skyline" aria-hidden="true">
+      {
+        [0, 1].map(() => (
+          <svg
+            class="curtain__tile"
+            viewBox="0 0 1400 90"
+            preserveAspectRatio="none"
+          >
+            <path
+              fill="currentColor"
+              d="M0 90 L0 60 L40 60 L40 34
+                 C40 20 62 20 62 34 L62 26 L66 26 L66 18
+                 C66 8 78 4 82 14 C86 4 98 8 98 18 L98 26 L102 26 L102 60
+                 L128 60 L128 90
+                 L150 90 L150 52 L182 30 L214 52 L214 90
+                 L226 90 L226 48 L256 28 L286 48 L286 90
+                 L310 90 L310 64 L330 64 L326 52 L296 56 L332 42 L322 44
+                 L336 30 L352 30 L366 44 L356 42 L392 56 L362 52 L358 64
+                 L378 64 L378 90
+                 L400 90 L400 70 L390 72 L420 58 L412 60 L424 46 L440 46
+                 L452 60 L444 58 L474 72 L464 70 L464 90
+                 L490 90 L490 26 L496 26 L496 14 L500 4 L504 14 L504 26
+                 L510 26 L510 90
+                 L530 90 L530 56 C530 30 596 30 596 56 L596 52
+                 C608 52 608 64 600 64 L600 90
+                 L640 90 L640 66 L620 70 L664 50 L652 52 L668 38 L688 38
+                 L704 52 L692 50 L736 70 L716 66 L716 90
+                 L760 90 L760 40 L774 18 L788 40 L788 90
+                 L810 90 L810 60 L840 60 L840 30 L870 14 L900 30 L900 60
+                 L930 60 L930 90
+                 L950 90 L950 58 C950 34 1010 34 1010 58 L1010 90
+                 L1040 90 L1040 60 L1080 24 L1120 60 L1120 90
+                 L1150 90 L1150 62 L1174 62 L1170 50 L1144 54 L1178 40
+                 L1190 26 L1206 26 L1218 40 L1252 54 L1226 50 L1222 62
+                 L1246 62 L1246 90
+                 L1280 90 L1280 44 L1300 44 L1300 36 L1320 20 L1340 36
+                 L1340 44 L1360 44 L1360 90 Z"
+            />
+          </svg>
+        ))
+      }
+    </div>
+
+    <!-- Алфавиты открываются, когда шторка выдвинута. -->
+    <div class="curtain__alpha" aria-hidden="true">
+      <div class="curtain__alpha-track">
+        {
+          [0, 1].map(() => (
+            <span class="curtain__alpha-seq">
+              {alphabets.map((a) => (
+                <span class="curtain__alpha-item">
+                  {a}
+                  <span class="curtain__alpha-dot" />
+                </span>
+              ))}
+            </span>
+          ))
+        }
+      </div>
+      <p class="curtain__label">Архитектура и языки мира — источник интерьеров</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Тап/клик — для экранов без наведения; мышь открывает шторку сама (CSS).
+  const curtain = document.getElementById('culture-curtain');
+  const handle = curtain?.querySelector<HTMLButtonElement>('.curtain__handle');
+  handle?.addEventListener('click', () => {
+    const open = curtain!.classList.toggle('is-open');
+    handle.setAttribute('aria-expanded', String(open));
+  });
+</script>
+
+<style>
+  .curtain {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    translate: 0 calc(100% - 58px);
+    transition: translate 0.55s var(--ease-out);
+  }
+
+  .curtain:hover,
+  .curtain:focus-within,
+  .curtain.is-open {
+    translate: 0 0;
+  }
+
+  /* Ручка-язычок по центру, чтобы шторку было видно и понятно. */
+  .curtain__handle {
+    position: absolute;
+    top: -26px;
+    left: 50%;
+    translate: -50% 0;
+    width: 92px;
+    height: 26px;
+    border: 3px solid var(--ink);
+    border-bottom: 0;
+    background: var(--yellow);
+    border-radius: 12px 12px 0 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .curtain__grip {
+    width: 34px;
+    height: 4px;
+    background: var(--ink);
+    border-radius: 2px;
+  }
+
+  .curtain__body {
+    background: var(--yellow);
+    border-top: 3px solid var(--ink);
+  }
+
+  /* --- крыши --- */
+  .curtain__skyline {
+    display: flex;
+    width: max-content;
+    color: var(--ink);
+    animation: skyline 40s linear infinite;
+  }
+
+  .curtain:hover .curtain__skyline,
+  .curtain.is-open .curtain__skyline {
+    animation-play-state: running;
+  }
+
+  @keyframes skyline {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .curtain__tile {
+    width: 1400px;
+    height: 55px;
+    flex: none;
+    display: block;
+  }
+
+  /* --- алфавиты (видны в открытом состоянии) --- */
+  .curtain__alpha {
+    overflow: hidden;
+    border-top: 2px dashed rgba(23, 21, 15, 0.45);
+    padding-block: 0.9rem 0.7rem;
+  }
+
+  .curtain__alpha-track {
+    display: flex;
+    width: max-content;
+    animation: alpha-run 32s linear infinite reverse;
+  }
+
+  @keyframes alpha-run {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .curtain__alpha-seq {
+    display: flex;
+    flex: none;
+  }
+
+  .curtain__alpha-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.3rem;
+    padding-inline: 0.65rem;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    white-space: nowrap;
+    color: var(--ink);
+  }
+
+  .curtain__alpha-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    rotate: 45deg;
+  }
+
+  .curtain__label {
+    margin: 0.55rem 0 0;
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(23, 21, 15, 0.65);
+  }
+
+  @media (max-width: 640px) {
+    .curtain {
+      translate: 0 calc(100% - 46px);
+    }
+    .curtain__tile {
+      height: 42px;
+    }
+    .curtain__alpha-item {
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .curtain__skyline,
+    .curtain__alpha-track {
+      animation: none;
+    }
+  }
+</style>
