@@ -1,0 +1,413 @@
+---
+/**
+ * «Полотно из букв» — вер­ле­товская физика ткани на canvas.
+ * Сетка частиц висит на верхнем ряду, буквы рисуются вдоль «нитей»;
+ * мышь раздвигает полотно, за любую точку можно схватиться и потянуть.
+ *
+ * Адаптация пена https://codepen.io/shubniggurath/pen/OPyPdmm:
+ * внешний модуль заменён локальными smoothstep/getPointID, вместо
+ * исходного кода в буквах — имя, услуги и алфавиты мира.
+ * Симуляция запускается только когда секция видна на экране,
+ * и не запускается вовсе при prefers-reduced-motion.
+ */
+---
+
+<section class="section cloth-section" id="cloth">
+  <div class="wrap">
+    <header class="cloth__head">
+      <p class="eyebrow reveal">Интерактив</p>
+      <h2 class="reveal" style="--reveal-delay: 0.06s">
+        Потяните за <span class="accent-red">нити</span>
+      </h2>
+      <p class="lede reveal" style="--reveal-delay: 0.12s">
+        Полотно соткано из букв — поводите по нему мышкой или схватите
+        и потяните. Как ткань в руках декоратора.
+      </p>
+    </header>
+  </div>
+  <div class="cloth__stage" id="cloth-stage"></div>
+</section>
+
+<script>
+  const TEXT =
+    'МАДИНА ДЖАПУЕВА · ДИЗАЙНЕР ИНТЕРЬЕРОВ · НАЛЬЧИК · ПРОЕКТ · КОМПЛЕКТАЦИЯ · ' +
+    'НАДЗОР · ABCDE · ΑΒΓΔ · あいうえ · 한글 · 漢字 · ' +
+    'УЮТ · СВЕТ · ЦВЕТ · ФОРМА · ЭРГОНОМИКА · ';
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = document.getElementById('cloth-stage')!;
+
+  const smoothstep = (edge0: number, edge1: number, x: number): number => {
+    const t = Math.min(1, Math.max(0, (x - edge0) / (edge1 - edge0)));
+    return t * t * (3 - 2 * t);
+  };
+  // Частицы складываются колонками: колонка i, строка j.
+  const getPointID = (j: number, i: number, gridH: number) => i * gridH + j;
+
+  class Vec2 {
+    x = 0;
+    y = 0;
+    constructor(x = 0, y = 0) {
+      this.reset(x, y);
+    }
+    reset(x = 0, y = 0) {
+      this.x = x;
+      this.y = y;
+    }
+    zero() {
+      this.reset(0, 0);
+    }
+    add(v: Vec2) {
+      this.x += v.x;
+      this.y += v.y;
+      return this;
+    }
+  }
+
+  interface Cfg {
+    awidth: number;
+    aheight: number;
+    gridW: number;
+    gridH: number;
+    cellWidth: number;
+    cellHeight: number;
+    gravity: number;
+    damping: number;
+    iterationsPerFrame: number;
+    mouseSize: number;
+    mouseStrength: number;
+  }
+
+  class Particle {
+    pos: Vec2;
+    oldPos: Vec2;
+    velocity = new Vec2();
+    acceleration = new Vec2();
+    gravityVec = new Vec2();
+    pinned: boolean;
+    originalPinned: boolean;
+    char: string;
+    downConstraint: Constraint | null = null;
+    constructor(x: number, y: number, pinned: boolean, char: string) {
+      this.pos = new Vec2(x, y);
+      this.oldPos = new Vec2(x, y);
+      this.pinned = pinned;
+      this.originalPinned = pinned;
+      this.char = char;
+    }
+    update(cfg: Cfg, delta: number) {
+      if (this.pinned) {
+        this.acceleration.zero();
+        return;
+      }
+      this.velocity.reset(
+        (this.pos.x - this.oldPos.x) * cfg.damping,
+        (this.pos.y - this.oldPos.y) * cfg.damping,
+      );
+      this.oldPos.reset(this.pos.x, this.pos.y);
+      const dd = Math.max(1, delta * delta);
+      this.gravityVec.reset(0, cfg.gravity / dd);
+      this.acceleration.add(this.gravityVec);
+      this.pos.x += this.velocity.x + this.acceleration.x * dd;
+      this.pos.y += this.velocity.y + this.acceleration.y * dd;
+      this.acceleration.reset();
+    }
+  }
+
+  class Constraint {
+    p1: Particle;
+    p2: Particle;
+    length: number;
+    minLength: number;
+    maxLength: number;
+    constructor(
+      p1: Particle,
+      p2: Particle,
+      length: number,
+      compressFactor: number,
+      stretchFactor: number,
+    ) {
+      this.p1 = p1;
+      this.p2 = p2;
+      this.length = length;
+      this.minLength = length * compressFactor;
+      this.maxLength = length * stretchFactor;
+    }
+    solve() {
+      const dx = this.p2.pos.x - this.p1.pos.x;
+      const dy = this.p2.pos.y - this.p1.pos.y;
+      const distance = Math.hypot(dx, dy);
+      if (distance === 0) return;
+
+      let targetLength = this.length;
+      if (distance < this.minLength) targetLength = this.minLength;
+      else if (distance > this.maxLength) targetLength = this.maxLength;
+      else return;
+
+      const percent = (targetLength - distance) / distance / 2;
+      const offsetX = dx * percent;
+      const offsetY = dy * percent;
+      if (!this.p1.pinned) {
+        this.p1.pos.x -= offsetX;
+        this.p1.pos.y -= offsetY;
+      }
+      if (!this.p2.pinned) {
+        this.p2.pos.x += offsetX;
+        this.p2.pos.y += offsetY;
+      }
+    }
+  }
+
+  function build() {
+    const small = window.innerWidth < 700;
+    const stageW = stage.clientWidth;
+    const stageH = small ? 420 : 520;
+
+    const w = Math.min(760, stageW - 40);
+    const h = stageH - 60;
+    const cfg: Cfg = {
+      awidth: w,
+      aheight: h,
+      gridW: small ? 26 : 42,
+      gridH: small ? 18 : 26,
+      cellWidth: 0,
+      cellHeight: 0,
+      gravity: 0.2,
+      damping: 0.99,
+      iterationsPerFrame: 5,
+      mouseSize: 5000,
+      mouseStrength: 4,
+    };
+    cfg.cellWidth = cfg.awidth / (cfg.gridW - 1);
+    cfg.cellHeight = cfg.aheight / (cfg.gridH - 1);
+
+    const c = document.createElement('canvas');
+    c.width = stageW;
+    c.height = stageH;
+    stage.innerHTML = '';
+    stage.appendChild(c);
+    const ctx = c.getContext('2d')!;
+
+    // Пре-рендер каждой буквы в свой маленький canvas — рисовать
+    // картинку сильно дешевле, чем текст с поворотом.
+    const charCanvases: Record<string, HTMLCanvasElement> = {};
+    const fontSize = Math.max(11, cfg.cellHeight * 1.1);
+    for (const ch of new Set(TEXT)) {
+      if (ch === ' ') continue;
+      const off = document.createElement('canvas');
+      off.width = off.height = Math.ceil(fontSize * 1.6);
+      const octx = off.getContext('2d')!;
+      octx.font = `bold ${fontSize}px monospace`;
+      octx.textAlign = 'center';
+      octx.textBaseline = 'middle';
+      octx.fillStyle = '#17150f';
+      octx.fillText(ch, off.width / 2, off.height / 2);
+      charCanvases[ch] = off;
+    }
+
+    const particles: Particle[] = [];
+    const constraints: Constraint[] = [];
+    for (let i = 0; i < cfg.gridW; i++) {
+      for (let j = 0; j < cfg.gridH; j++) {
+        const pinned = j === 0;
+        const charIndex = (i + j * cfg.gridW) % TEXT.length;
+        particles.push(
+          new Particle(
+            i * cfg.cellWidth,
+            j * cfg.cellHeight,
+            pinned,
+            TEXT[charIndex] || ' ',
+          ),
+        );
+      }
+    }
+    for (let i = 0; i < cfg.gridW; i++) {
+      for (let j = 0; j < cfg.gridH; j++) {
+        const p = particles[getPointID(j, i, cfg.gridH)];
+        if (j < cfg.gridH - 1) {
+          const bottom = particles[getPointID(j + 1, i, cfg.gridH)];
+          const vc = new Constraint(p, bottom, cfg.cellHeight, 0.02, 1.1);
+          constraints.push(vc);
+          p.downConstraint = vc;
+        }
+        if (i < cfg.gridW - 1) {
+          const right = particles[getPointID(j, i + 1, cfg.gridH)];
+          constraints.push(new Constraint(p, right, cfg.cellWidth, 0.6, 4));
+        }
+      }
+    }
+
+    const offset = [
+      (c.width - cfg.awidth) / 2,
+      (c.height - cfg.aheight) / 2 - 20,
+    ];
+
+    // --- мышь/палец: толкает полотно, может схватить точку ---
+    const mouse = new Vec2();
+    let grabbed: Particle | null = null;
+    const toLocal = (e: PointerEvent) => {
+      const rect = c.getBoundingClientRect();
+      mouse.reset(
+        e.clientX - rect.left - offset[0],
+        e.clientY - rect.top - offset[1],
+      );
+    };
+    const pointerdown = (e: PointerEvent) => {
+      toLocal(e);
+      for (const p of particles) {
+        if (Math.hypot(mouse.x - p.pos.x, mouse.y - p.pos.y) < 20) {
+          grabbed = p;
+          grabbed.pinned = true;
+          break;
+        }
+      }
+    };
+    const pointerup = () => {
+      if (grabbed) {
+        grabbed.pinned = grabbed.originalPinned;
+        grabbed = null;
+      }
+    };
+    const force = new Vec2();
+    const pointermove = (e: PointerEvent) => {
+      toLocal(e);
+      if (grabbed) {
+        grabbed.pos.reset(mouse.x, mouse.y);
+        grabbed.oldPos.reset(mouse.x, mouse.y);
+      }
+      for (const p of particles) {
+        const dx = mouse.x - p.pos.x;
+        const dy = mouse.y - p.pos.y;
+        const ls = dx * dx + dy * dy;
+        if (ls < cfg.mouseSize) {
+          const a = Math.atan2(dy, dx) - Math.PI;
+          const strength =
+            (smoothstep(cfg.mouseSize, -2000, ls) * cfg.mouseStrength) / 300;
+          force.reset(Math.cos(a) * strength, Math.sin(a) * strength);
+          p.acceleration.add(force);
+        }
+      }
+    };
+    c.addEventListener('pointerdown', pointerdown);
+    window.addEventListener('pointerup', pointerup);
+    c.addEventListener('pointermove', pointermove);
+    c.style.touchAction = 'pan-y';
+
+    function draw() {
+      ctx.clearRect(0, 0, c.width, c.height);
+      for (const p of particles) {
+        if (!p.char || p.char === ' ') continue;
+        const img = charCanvases[p.char];
+        if (!img) continue;
+        const half = img.width / 2;
+        let cos = 1;
+        let sin = 0;
+        const dc = p.downConstraint;
+        if (dc) {
+          const dx = dc.p2.pos.x - dc.p1.pos.x;
+          const dy = dc.p2.pos.y - dc.p1.pos.y;
+          const angle = Math.atan2(dy, dx) - Math.PI / 2;
+          cos = Math.cos(angle);
+          sin = Math.sin(angle);
+        }
+        ctx.setTransform(
+          cos,
+          sin,
+          -sin,
+          cos,
+          p.pos.x + offset[0],
+          p.pos.y + offset[1],
+        );
+        ctx.drawImage(img, -half, -half);
+      }
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
+
+    let rafID = 0;
+    let lastDelta = 0;
+    let running = false;
+    function runloop(delta: number) {
+      rafID = requestAnimationFrame(runloop);
+      const dt = Math.min(32, delta - lastDelta) || 16;
+      lastDelta = delta;
+      for (const p of particles) p.update(cfg, dt);
+      for (let i = 0; i < cfg.iterationsPerFrame; i++) {
+        for (let j = 0; j < constraints.length; j++) constraints[j].solve();
+      }
+      draw();
+    }
+
+    // Пусть ткань немного «уляжется» и отрисуется даже без движения мыши.
+    if (reduced) {
+      for (let k = 0; k < 40; k++) {
+        for (const p of particles) p.update(cfg, 16);
+        for (let i = 0; i < cfg.iterationsPerFrame; i++) {
+          for (let j = 0; j < constraints.length; j++) constraints[j].solve();
+        }
+      }
+      draw();
+      return () => undefined;
+    }
+
+    // Гоняем физику только когда секция на экране.
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !running) {
+        running = true;
+        lastDelta = performance.now();
+        rafID = requestAnimationFrame(runloop);
+      } else if (!entry.isIntersecting && running) {
+        running = false;
+        cancelAnimationFrame(rafID);
+      }
+    });
+    io.observe(stage);
+
+    return () => {
+      cancelAnimationFrame(rafID);
+      io.disconnect();
+      c.removeEventListener('pointerdown', pointerdown);
+      window.removeEventListener('pointerup', pointerup);
+      c.removeEventListener('pointermove', pointermove);
+    };
+  }
+
+  let cleanup = build();
+  let resizeTimer = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      cleanup();
+      cleanup = build();
+    }, 250);
+  });
+</script>
+
+<style>
+  .cloth-section {
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+
+  .cloth__head {
+    max-width: 54rem;
+    margin-bottom: 1rem;
+  }
+
+  .cloth__head h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .cloth__stage {
+    width: 100%;
+    cursor: grab;
+  }
+
+  .cloth__stage:active {
+    cursor: grabbing;
+  }
+
+  .cloth__stage :global(canvas) {
+    display: block;
+    width: 100%;
+  }
+</style>
