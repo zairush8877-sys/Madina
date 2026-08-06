@@ -101,7 +101,8 @@ GitHub → аватар справа вверху → **Settings → Account →
 3. В репозитории: **Settings → Pages → Custom domain** → `djapueva.ru`,
    дождитесь проверки и включите **Enforce HTTPS**.
 4. В `astro.config.mjs` поменяйте `SITE` на `'https://djapueva.ru'`,
-   а `BASE` на `'/'`, закоммитьте в `main`.
+   а `BASE` на `'/'`; в `public/robots.txt` обновите адрес sitemap
+   на `https://djapueva.ru/sitemap-index.xml`. Закоммитьте в `main`.
 
 DNS обновляется от нескольких минут до суток — это нормально.
 

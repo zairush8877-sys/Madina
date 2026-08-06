@@ -37,6 +37,13 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+/* До ~356px телефон переносится на свою строку — шапка трёхстрочная. */
+@media (max-width: 360px) {
+  html {
+    scroll-padding-top: 7.75rem;
+  }
+}
+
 body {
   margin: 0;
   background: var(--paper);

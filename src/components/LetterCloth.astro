@@ -353,23 +353,28 @@
         e.clientY - rect.top - offset[1],
       );
     };
+    const pointerup = () => {
+      if (grabbed) {
+        grabbed.pinned = grabbed.originalPinned;
+        grabbed = null;
+      }
+    };
     const pointerdown = (e: PointerEvent) => {
       toLocal(e);
       for (const p of particles) {
         // Верхний закреплённый ряд — подвес полотна: его не хватаем,
         // иначе якорь перезакрепится там, куда его перетащили.
-        if (p.pinned) continue;
+        // Сравниваем с originalPinned, а не pinned: уже захваченную
+        // частицу можно перехватить, а не оставить висеть сиротой.
+        if (p.originalPinned) continue;
         if (Math.hypot(mouse.x - p.pos.x, mouse.y - p.pos.y) < 20) {
+          // Мультитач: второй палец отпускает предыдущий захват,
+          // иначе та частица осталась бы запиненной навсегда.
+          pointerup();
           grabbed = p;
           grabbed.pinned = true;
           break;
         }
-      }
-    };
-    const pointerup = () => {
-      if (grabbed) {
-        grabbed.pinned = grabbed.originalPinned;
-        grabbed = null;
       }
     };
     const force = new Vec2();
@@ -452,6 +457,21 @@
       cleanup = build();
     }, 250);
   });
+
+  // Переезд окна на монитор с другим масштабом не даёт resize —
+  // ловим смену devicePixelRatio и пересобираем канвас в новой плотности.
+  let dprMedia: MediaQueryList;
+  const onDprChange = () => {
+    dprMedia.removeEventListener('change', onDprChange);
+    watchDpr();
+    cleanup();
+    cleanup = build();
+  };
+  function watchDpr() {
+    dprMedia = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+    dprMedia.addEventListener('change', onDprChange);
+  }
+  watchDpr();
 </script>
 
 <style>
@@ -491,11 +511,17 @@
 
   .cloth__stage {
     width: 100%;
-    cursor: grab;
   }
 
-  .cloth__stage:active {
-    cursor: grabbing;
+  /* Курсор обещает интерактивность только там, где она есть:
+     при reduced-motion полотно статично и слушатели не вешаются. */
+  @media (prefers-reduced-motion: no-preference) {
+    .cloth__stage {
+      cursor: grab;
+    }
+    .cloth__stage:active {
+      cursor: grabbing;
+    }
   }
 
   .cloth__stage :global(canvas) {

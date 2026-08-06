@@ -86,8 +86,10 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
           ))
         }
       </div>
-      <p class="curtain__label">Архитектура и языки мира — источник интерьеров</p>
     </div>
+    <!-- Подпись — вне aria-hidden: единственный текст раскрываемого
+         региона, иначе для скринридера кнопка раскрывала бы пустоту. -->
+    <p class="curtain__label">Архитектура и языки мира — источник интерьеров</p>
   </div>
 </div>
 
@@ -119,6 +121,16 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   window.addEventListener('resize', setPeek);
   // Unbounded может доехать позже первого замера — перемеряем по загрузке.
   document.fonts?.ready.then(setPeek);
+
+  // Ховер-открытие — только для настоящей мыши. CSS-медиа (hover: hover)
+  // здесь мало: на ноутбуке с тачскрином тап оставляет эмулированный
+  // :hover, и шторка не закрывалась бы до следующего касания в стороне.
+  curtain?.addEventListener('pointerenter', (e) => {
+    if (e.pointerType === 'mouse') curtain!.classList.add('is-hover');
+  });
+  curtain?.addEventListener('pointerleave', (e) => {
+    if (e.pointerType === 'mouse') curtain!.classList.remove('is-hover');
+  });
 </script>
 
 <style>
@@ -134,17 +146,12 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     transition: translate 0.55s var(--ease-out);
   }
 
-  /* Наведение открывает шторку только там, где ховер настоящий:
-     на тач-экранах эмуляция ховера залипает после тапа.
-     Открытие с клавиатуры и тапом делает кнопка-ручка (.is-open) —
-     :focus-within тут нельзя: пока фокус на кнопке, шторку было бы
-     не закрыть повторным нажатием. */
-  @media (hover: hover) {
-    .curtain:hover {
-      translate: 0 0;
-    }
-  }
-
+  /* .is-hover ставит скрипт по pointerenter с pointerType === 'mouse' —
+     тап никогда не открывает шторку «залипшим ховером». Открытие
+     с клавиатуры и тапом делает кнопка-ручка (.is-open) — :focus-within
+     тут нельзя: пока фокус на кнопке, шторку было бы не закрыть
+     повторным нажатием. */
+  .curtain.is-hover,
   .curtain.is-open {
     translate: 0 0;
   }
@@ -200,7 +207,7 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   .curtain__alpha {
     overflow: hidden;
     border-top: 2px dashed rgba(23, 21, 15, 0.45);
-    padding-block: 0.9rem 0.7rem;
+    padding-top: 0.9rem;
   }
 
   .curtain__alpha-track {
@@ -233,7 +240,7 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   }
 
   .curtain__label {
-    margin: 0.55rem 0 0;
+    margin: 0.55rem 0 0.7rem;
     text-align: center;
     font-size: 0.7rem;
     letter-spacing: 0.2em;

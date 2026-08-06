@@ -22,7 +22,7 @@ const accents = ['var(--red)', 'var(--yellow)', 'var(--blue)'];
           <article
             class="price reveal"
             data-tilt
-            style={`--reveal-delay: ${i * 0.08}s; --price-accent: ${accents[i % 3]}`}
+            style={`--reveal-delay: ${(i * 0.08).toFixed(2)}s; --price-accent: ${accents[i % 3]}`}
           >
             <h3 class="price__title">{item.title}</h3>
             <p class="price__amount">

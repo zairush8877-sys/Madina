@@ -29,7 +29,7 @@ const shapeKinds = ['circle', 'square', 'triangle'] as const;
           <li
             class="service reveal"
             data-tilt
-            style={`--reveal-delay: ${(i % 4) * 0.07}s`}
+            style={`--reveal-delay: ${((i % 4) * 0.07).toFixed(2)}s`}
           >
             <span
               class={`service__shape service__shape--${shapeKinds[i % 3]}`}
