@@ -8,6 +8,7 @@ import Services from '../components/Services.astro';
 import Approach from '../components/Approach.astro';
 import Pricing from '../components/Pricing.astro';
 import VideoSection from '../components/VideoSection.astro';
+import LetterCloth from '../components/LetterCloth.astro';
 import Contacts from '../components/Contacts.astro';
 import Footer from '../components/Footer.astro';
 import CultureCurtain from '../components/CultureCurtain.astro';
@@ -24,6 +25,7 @@ import { site } from '../content/site';
     <Approach />
     <Pricing />
     {site.video.enabled && <VideoSection />}
+    <LetterCloth />
     <Contacts />
   </main>
   <Footer />
