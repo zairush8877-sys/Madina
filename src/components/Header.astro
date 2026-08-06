@@ -5,7 +5,7 @@ import { site } from '../content/site';
 <header class="site-header">
   <div class="wrap site-header__inner">
     <a class="brand" href="#top">
-      <span class="brand__dot" aria-hidden="true"></span>
+      <span class="brand__gem" aria-hidden="true"></span>
       <span class="brand__name">{site.person.fullName}</span>
     </a>
 
@@ -24,8 +24,10 @@ import { site } from '../content/site';
     position: sticky;
     top: 0;
     z-index: 40;
-    background: var(--paper);
-    border-bottom: 2px solid var(--ink);
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--hairline);
   }
 
   .site-header__inner {
@@ -39,43 +41,43 @@ import { site } from '../content/site';
   .brand {
     display: flex;
     align-items: center;
-    gap: 0.65rem;
+    gap: 0.7rem;
     text-decoration: none;
     margin-right: auto;
   }
 
-  /* Красный круг медленно «дышит» — единственный движущийся элемент шапки. */
-  .brand__dot {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--red);
-    animation: breathe 3.6s ease-in-out infinite;
+  /* Латунный ромб медленно вращается — единственное движение шапки. */
+  .brand__gem {
+    width: 11px;
+    height: 11px;
+    background: linear-gradient(135deg, var(--brass-2), var(--brass));
+    rotate: 45deg;
+    animation: gem-turn 9s ease-in-out infinite;
   }
 
-  @keyframes breathe {
+  @keyframes gem-turn {
     0%,
     100% {
-      scale: 1;
+      rotate: 45deg;
     }
     50% {
-      scale: 1.35;
+      rotate: 225deg;
     }
   }
 
   .brand__name {
     font-family: var(--font-display);
-    font-size: 0.86rem;
+    font-size: 1.22rem;
     font-weight: 600;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.015em;
   }
 
   .site-nav {
     display: flex;
-    gap: clamp(0.9rem, 2.2vw, 1.7rem);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+    gap: clamp(0.9rem, 2.2vw, 1.8rem);
+    font-size: 0.66rem;
+    font-weight: 650;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
   }
 
@@ -84,7 +86,7 @@ import { site } from '../content/site';
     text-decoration: none;
     color: var(--ink-2);
     padding-block: 0.4rem;
-    transition: color 0.2s ease;
+    transition: color 0.25s ease;
   }
 
   .site-nav a::after {
@@ -93,9 +95,9 @@ import { site } from '../content/site';
     left: 0;
     right: 100%;
     bottom: 0;
-    height: 3px;
-    background: var(--red);
-    transition: right 0.3s var(--ease-out);
+    height: 1px;
+    background: var(--brass);
+    transition: right 0.35s var(--ease-out);
   }
 
   .site-nav a:hover,
@@ -110,10 +112,17 @@ import { site } from '../content/site';
 
   .site-header__phone {
     font-family: var(--font-display);
-    font-size: 0.72rem;
+    font-size: 1.02rem;
+    font-weight: 600;
     text-decoration: none;
     white-space: nowrap;
     color: var(--ink);
+    transition: color 0.25s ease;
+  }
+
+  .site-header__phone:hover,
+  .site-header__phone:focus-visible {
+    color: var(--bronze);
   }
 
   @media (max-width: 900px) {

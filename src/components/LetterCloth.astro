@@ -17,7 +17,7 @@
     <header class="cloth__head">
       <p class="eyebrow reveal">Текстиль</p>
       <h2 class="reveal" style="--reveal-delay: 0.06s">
-        Интерьер начинается<br />с <span class="accent-red">ткани</span>
+        Интерьер начинается<br />с <em class="accent">ткани</em>
       </h2>
       <p class="lede reveal" style="--reveal-delay: 0.12s">
         Подбор тканей — любимая часть моей работы: лён, бархат, твид,
@@ -353,10 +353,15 @@
         e.clientY - rect.top - offset[1],
       );
     };
-    const pointerup = () => {
-      if (grabbed) {
+    // Отпускание без события — принудительное (перехват другим пальцем);
+    // с событием — только если поднялся именно захвативший указатель,
+    // иначе чужой pointerup обрывал бы перетаскивание посреди жеста.
+    let grabbedPointer = -1;
+    const pointerup = (e?: PointerEvent) => {
+      if (grabbed && (!e || e.pointerId === grabbedPointer)) {
         grabbed.pinned = grabbed.originalPinned;
         grabbed = null;
+        grabbedPointer = -1;
       }
     };
     const pointerdown = (e: PointerEvent) => {
@@ -373,6 +378,7 @@
           pointerup();
           grabbed = p;
           grabbed.pinned = true;
+          grabbedPointer = e.pointerId;
           break;
         }
       }

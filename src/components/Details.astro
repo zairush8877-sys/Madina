@@ -1,0 +1,149 @@
+---
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import LuxObject from './LuxObject.astro';
+import { site } from '../content/site';
+import dripTable from '../assets/photos/lux-drip-table.jpg';
+import handleFigures from '../assets/photos/lux-handle-figures.jpg';
+import faucet from '../assets/photos/lux-faucet.jpg';
+import wardrobe from '../assets/photos/lux-wardrobe.jpg';
+import handHooks from '../assets/photos/lux-hand-hooks.jpg';
+import handFoot from '../assets/photos/lux-hand-foot.jpg';
+
+// Ключи совпадают с site.details.items[].photo.
+const photos: Record<string, ImageMetadata> = {
+  'drip-table': dripTable,
+  'handle-figures': handleFigures,
+  faucet,
+  wardrobe,
+  'hand-hooks': handHooks,
+  'hand-foot': handFoot,
+};
+---
+
+<section class="section details-section" id="details">
+  <div class="decor" aria-hidden="true">
+    <LuxObject name="key" class="det-obj det-obj--key sway" depth={0.35} />
+    <LuxObject name="chair" class="det-obj det-obj--chair rock" depth={0.2} />
+  </div>
+
+  <div class="wrap">
+    <header class="details__head">
+      <p class="eyebrow reveal">{site.details.eyebrow}</p>
+      <h2 class="reveal" style="--reveal-delay: 0.06s">{site.details.title}</h2>
+      <p class="lede reveal" style="--reveal-delay: 0.12s">{site.details.lede}</p>
+    </header>
+
+    <div class="details__grid">
+      {
+        site.details.items.map((item, i) => {
+          const img = photos[item.photo];
+          if (!img) return null;
+          return (
+            <figure
+              class="detail reveal"
+              style={`--reveal-delay: ${((i % 3) * 0.09).toFixed(2)}s`}
+            >
+              <div class="detail__frame">
+                <Picture
+                  src={img}
+                  alt={item.caption}
+                  widths={[340, 560]}
+                  sizes="(max-width: 640px) 92vw, (max-width: 1000px) 45vw, 30vw"
+                  formats={['avif', 'webp']}
+                  loading="lazy"
+                />
+              </div>
+              <figcaption class="detail__caption">{item.caption}</figcaption>
+            </figure>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .details-section {
+    overflow: hidden;
+  }
+
+  :global(.det-obj--key) {
+    width: 30px;
+    top: 7%;
+    left: 4%;
+  }
+
+  :global(.det-obj--chair) {
+    width: 64px;
+    bottom: 4%;
+    right: 4%;
+    color: var(--ink-3);
+  }
+
+  .details__head {
+    max-width: 54rem;
+    margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .details__head h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  /* Колоночная кладка: фото разной высоты ложатся плотно, как
+     развеска рам в галерее. */
+  .details__grid {
+    columns: 3 16rem;
+    column-gap: 1.6rem;
+  }
+
+  .detail {
+    break-inside: avoid;
+    margin: 0 0 1.6rem;
+  }
+
+  /* Паспарту: белое поле, тонкая рама, мягкая тень. */
+  .detail__frame {
+    background: var(--paper);
+    border: 1px solid var(--hairline);
+    padding: 0.6rem;
+    overflow: hidden;
+    transition: box-shadow 0.45s var(--ease-out),
+      border-color 0.45s var(--ease-out);
+  }
+
+  .detail__frame :global(img) {
+    width: 100%;
+    display: block;
+    transition: scale 1.2s var(--ease-out);
+  }
+
+  .detail:hover .detail__frame {
+    border-color: var(--brass);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .detail:hover .detail__frame :global(img) {
+    scale: 1.04;
+  }
+
+  .detail__caption {
+    margin-top: 0.7rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.02rem;
+    color: var(--ink-2);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .detail__caption::before {
+    content: '';
+    flex: none;
+    width: 6px;
+    height: 6px;
+    background: var(--brass);
+    rotate: 45deg;
+  }
+</style>

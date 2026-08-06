@@ -94,7 +94,8 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 </div>
 
 <script>
-  // Тап/клик — для экранов без наведения; мышь открывает шторку сама (CSS).
+  // Тап/клик по ручке — открытие «пином»; ховер-открытие делает скрипт
+  // ниже (pointerenter только для настоящей мыши -> класс .is-hover).
   const curtain = document.getElementById('culture-curtain');
   const handle = curtain?.querySelector<HTMLButtonElement>('.curtain__handle');
   handle?.addEventListener('click', () => {
@@ -153,6 +154,12 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
      повторным нажатием. */
   .curtain.is-hover,
   .curtain.is-open {
+    translate: 0 0;
+  }
+
+  /* Без JavaScript класс .js не ставится — оставляем чистый
+     CSS-ховер, чтобы шторка открывалась и без скриптов. */
+  :global(html:not(.js)) .curtain:hover {
     translate: 0 0;
   }
 
@@ -235,7 +242,7 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   .curtain__alpha-dot {
     width: 8px;
     height: 8px;
-    background: var(--red);
+    background: var(--brass);
     rotate: 45deg;
   }
 

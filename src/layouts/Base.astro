@@ -3,6 +3,7 @@ import '../styles/fonts.css';
 import '../styles/global.css';
 import { site } from '../content/site';
 import { withBase } from '../lib/url';
+import cormorantCyr from '../assets/fonts/cormorant-cyrillic-normal.woff2?url';
 
 interface Props {
   title?: string;
@@ -38,8 +39,16 @@ const ogImage = new URL(withBase('og-image.jpg'), Astro.site).toString();
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <meta name="theme-color" content="#f4efe6" />
+    <meta name="theme-color" content="#ffffff" />
     <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+    <!-- Заголовки — кириллический Cormorant: прелоад против мигания шрифта. -->
+    <link
+      rel="preload"
+      href={cormorantCyr}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
 
     <script
       is:inline

@@ -7,7 +7,7 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <div class="wrap site-footer__inner">
     <p class="site-footer__brand">
-      <span class="site-footer__sq" aria-hidden="true"></span>
+      <span class="site-footer__gem" aria-hidden="true"></span>
       {site.person.fullName} — {site.person.role.toLowerCase()}, {site.person.city}
     </p>
     <p class="site-footer__legal">© {year}. Все права защищены.</p>
@@ -17,8 +17,8 @@ const year = new Date().getFullYear();
 <style>
   .site-footer {
     background: var(--ink);
-    color: #8f887b;
-    border-top: 1px solid #35322a;
+    color: #8f8778;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
     padding-block: 1.75rem;
     font-size: 0.83rem;
   }
@@ -38,10 +38,10 @@ const year = new Date().getFullYear();
     gap: 0.6rem;
   }
 
-  .site-footer__sq {
-    width: 10px;
-    height: 10px;
-    background: var(--red);
+  .site-footer__gem {
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(135deg, var(--brass-2), var(--brass));
     rotate: 45deg;
   }
 </style>

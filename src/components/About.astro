@@ -1,29 +1,26 @@
 ---
 import { Picture } from 'astro:assets';
+import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
-import portraitA from '../assets/photos/portrait-evening-01.jpg';
-import portraitB from '../assets/photos/portrait-evening-03.jpg';
+import interiorA from '../assets/photos/lux-dark-cabinet.jpg';
+import interiorB from '../assets/photos/lux-cane-stool.jpg';
 ---
 
 <section class="section about-section" id="about">
-  <div class="shapes" aria-hidden="true">
-    <span class="shape shape--ring about-sh1" data-depth="0.25"></span>
-    <span
-      class="shape shape--circle about-sh2"
-      data-depth="0.5"
-      style="background: var(--yellow)"></span>
+  <div class="decor" aria-hidden="true">
+    <LuxObject name="floorlamp" class="about-obj about-obj--lamp bobbing" depth={0.22} />
+    <LuxObject name="vase" class="about-obj about-obj--vase floaty" depth={0.4} />
   </div>
 
   <div class="wrap about">
     <div class="about__media reveal">
-      <span class="about__spinner" aria-hidden="true"></span>
-      <!-- Классы — на div-обёртках, как в Hero: у <Picture /> класс уходит
-           на сам <img> без scoped-атрибута, и стили компонента до него
+      <!-- Классы — на div-обёртках: у <Picture /> класс уходит на сам
+           <img> без scoped-атрибута, и стили компонента до него
            не дотягиваются. -->
       <div class="about__img about__img--a">
         <Picture
-          src={portraitA}
-          alt={`${site.person.fullName}`}
+          src={interiorA}
+          alt="Кабинет с тёмными ботаническими обоями и деревянным столом"
           widths={[360, 620]}
           sizes="(max-width: 900px) 45vw, 24vw"
           formats={['avif', 'webp']}
@@ -32,8 +29,8 @@ import portraitB from '../assets/photos/portrait-evening-03.jpg';
       </div>
       <div class="about__img about__img--b">
         <Picture
-          src={portraitB}
-          alt={`${site.person.fullName} — портрет`}
+          src={interiorB}
+          alt="Ротанговый стул ручной работы с латунным кувшином"
           widths={[300, 520]}
           sizes="(max-width: 900px) 38vw, 19vw"
           formats={['avif', 'webp']}
@@ -48,7 +45,7 @@ import portraitB from '../assets/photos/portrait-evening-03.jpg';
       <div class="about__body">
         {
           site.about.paragraphs.map((p, i) => (
-            <p class="reveal" style={`--reveal-delay: ${0.1 + i * 0.06}s`}>
+            <p class="reveal" style={`--reveal-delay: ${(0.1 + i * 0.06).toFixed(2)}s`}>
               {p}
             </p>
           ))
@@ -64,25 +61,21 @@ import portraitB from '../assets/photos/portrait-evening-03.jpg';
 <style>
   .about-section {
     background: var(--paper-2);
-    border-block: 2px solid var(--ink);
+    border-block: 1px solid var(--hairline);
     overflow: hidden;
   }
 
-  .about-sh1 {
-    width: 300px;
-    height: 300px;
-    border: 2px dashed var(--red);
-    top: -110px;
-    right: -80px;
-    animation: spin-back 44s linear infinite;
+  :global(.about-obj--lamp) {
+    width: 84px;
+    top: 8%;
+    right: 4%;
+    color: var(--ink-3);
   }
 
-  .about-sh2 {
+  :global(.about-obj--vase) {
     width: 46px;
-    height: 46px;
-    bottom: 14%;
-    right: 8%;
-    animation: bob 5.5s ease-in-out infinite;
+    bottom: 10%;
+    right: 12%;
   }
 
   .about {
@@ -98,40 +91,34 @@ import portraitB from '../assets/photos/portrait-evening-03.jpg';
     padding-bottom: 4.5rem;
   }
 
-  /* Вращающийся квадрат за фотографиями. */
-  .about__spinner {
-    position: absolute;
-    top: -34px;
-    left: -34px;
-    width: 130px;
-    height: 130px;
-    border: 3px solid var(--blue);
-    animation: spin 22s linear infinite;
-  }
-
   .about__img :global(img),
   .about__img {
     width: 100%;
   }
 
+  /* Большое фото — в арочной раме, как в референсах. */
   .about__img--a :global(img) {
     aspect-ratio: 3 / 4;
     object-fit: cover;
-    border: 4px solid var(--ink);
+    border-radius: 999px 999px 0 0;
+    box-shadow: var(--shadow-soft);
   }
 
   .about__img--b {
     position: absolute;
     right: -1rem;
     bottom: 0;
-    width: 52%;
+    width: 54%;
+    /* Паспарту: белое поле и тонкая рама, как у гравюры. */
+    background: var(--paper);
+    padding: 0.55rem;
+    border: 1px solid var(--hairline);
+    box-shadow: var(--shadow-soft);
   }
 
   .about__img--b :global(img) {
     aspect-ratio: 3 / 4;
     object-fit: cover;
-    border: 4px solid var(--ink);
-    box-shadow: 8px 8px 0 0 var(--red);
   }
 
   .about__body {
@@ -140,14 +127,15 @@ import portraitB from '../assets/photos/portrait-evening-03.jpg';
   }
 
   .about__quote {
-    margin: 2.25rem 0 0;
-    padding: 1.4rem 1.6rem;
-    border: 3px solid var(--ink);
-    background: var(--paper);
-    box-shadow: 8px 8px 0 0 var(--yellow);
-    font-size: 1.02rem;
-    line-height: 1.65;
+    margin: 2.5rem 0 0;
+    padding: 0 0 0 1.6rem;
+    border-left: 1px solid var(--brass);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+    line-height: 1.45;
     font-weight: 500;
+    color: var(--ink);
   }
 
   @media (max-width: 900px) {
@@ -157,6 +145,9 @@ import portraitB from '../assets/photos/portrait-evening-03.jpg';
     .about__media {
       max-width: 23rem;
       padding-bottom: 3.5rem;
+    }
+    :global(.about-obj--vase) {
+      display: none;
     }
   }
 </style>

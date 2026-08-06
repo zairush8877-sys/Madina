@@ -26,16 +26,16 @@ const items = site.services.map((s) => s.title);
 <style>
   .marquee {
     overflow: hidden;
-    border-block: 2px solid var(--ink);
-    background: var(--yellow);
-    padding-block: 0.85rem;
+    border-block: 1px solid var(--hairline);
+    background: var(--paper);
+    padding-block: 1.05rem;
   }
 
   .marquee__track {
     display: flex;
     width: max-content;
     /* marquee-half — общий keyframe из global.css. */
-    animation: marquee-half 26s linear infinite;
+    animation: marquee-half 30s linear infinite;
   }
 
   .marquee:hover .marquee__track {
@@ -50,20 +50,20 @@ const items = site.services.map((s) => s.title);
   .marquee__item {
     display: inline-flex;
     align-items: center;
-    gap: 1.4rem;
-    padding-inline: 0.7rem;
+    gap: 1.6rem;
+    padding-inline: 0.8rem;
     font-family: var(--font-display);
-    font-size: 0.78rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    font-style: italic;
+    font-size: 1.18rem;
+    font-weight: 500;
     white-space: nowrap;
-    color: var(--ink);
+    color: var(--ink-2);
   }
 
   .marquee__dot {
-    width: 9px;
-    height: 9px;
-    background: var(--ink);
+    width: 7px;
+    height: 7px;
+    background: var(--brass);
     rotate: 45deg;
   }
 </style>
