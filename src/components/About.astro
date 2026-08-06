@@ -17,24 +17,29 @@ import portraitB from '../assets/photos/portrait-evening-03.jpg';
   <div class="wrap about">
     <div class="about__media reveal">
       <span class="about__spinner" aria-hidden="true"></span>
-      <Picture
-        class="about__img about__img--a"
-        src={portraitA}
-        alt={`${site.person.fullName}`}
-        widths={[360, 620]}
-        sizes="(max-width: 900px) 45vw, 24vw"
-        formats={['avif', 'webp']}
-        loading="lazy"
-      />
-      <Picture
-        class="about__img about__img--b"
-        src={portraitB}
-        alt={`${site.person.fullName} — портрет`}
-        widths={[300, 520]}
-        sizes="(max-width: 900px) 38vw, 19vw"
-        formats={['avif', 'webp']}
-        loading="lazy"
-      />
+      <!-- Классы — на div-обёртках, как в Hero: у <Picture /> класс уходит
+           на сам <img> без scoped-атрибута, и стили компонента до него
+           не дотягиваются. -->
+      <div class="about__img about__img--a">
+        <Picture
+          src={portraitA}
+          alt={`${site.person.fullName}`}
+          widths={[360, 620]}
+          sizes="(max-width: 900px) 45vw, 24vw"
+          formats={['avif', 'webp']}
+          loading="lazy"
+        />
+      </div>
+      <div class="about__img about__img--b">
+        <Picture
+          src={portraitB}
+          alt={`${site.person.fullName} — портрет`}
+          widths={[300, 520]}
+          sizes="(max-width: 900px) 38vw, 19vw"
+          formats={['avif', 'webp']}
+          loading="lazy"
+        />
+      </div>
     </div>
 
     <div class="about__text">

@@ -1,4 +1,5 @@
 ---
+import OrbitSatellite from './OrbitSatellite.astro';
 import { site } from '../content/site';
 import { withBase } from '../lib/url';
 
@@ -31,10 +32,14 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
     </div>
 
     <!-- Ролик снят вертикально (9:16) — плеер узкий, как экран телефона. -->
+    <!-- Жёлтый «спутник» облетает плеер против часовой. -->
     <div class="video__frame reveal" style="--reveal-delay: 0.1s">
-      <span class="video__orbit" aria-hidden="true">
-        <span class="video__satellite"></span>
-      </span>
+      <OrbitSatellite
+        color="var(--yellow)"
+        ring="var(--paper-2)"
+        duration="24s"
+        reverse
+      />
       <video
         class="video__player"
         src={videoSrc}
@@ -101,27 +106,6 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
     background: #000;
     border: 4px solid var(--ink);
     box-shadow: 10px 10px 0 0 var(--red);
-  }
-
-  /* Жёлтый «спутник» облетает плеер по пунктирной орбите. */
-  .video__orbit {
-    position: absolute;
-    inset: -40px;
-    border: 2px dashed rgba(23, 21, 15, 0.35);
-    border-radius: 50%;
-    animation: spin-back 24s linear infinite;
-    pointer-events: none;
-  }
-
-  .video__satellite {
-    position: absolute;
-    top: -12px;
-    left: calc(50% - 12px);
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background: var(--yellow);
-    border: 3px solid var(--paper-2);
   }
 
   @media (max-width: 860px) {

@@ -6,7 +6,7 @@
  *
  * Адаптация пена https://codepen.io/shubniggurath/pen/OPyPdmm:
  * внешний модуль заменён локальными smoothstep/getPointID, вместо
- * исходного кода в буквах — имя, услуги и алфавиты мира.
+ * исходного кода в буквах — имя и «текстильные» слова латиницей.
  * Симуляция запускается только когда секция видна на экране,
  * и не запускается вовсе при prefers-reduced-motion.
  */
@@ -65,6 +65,12 @@
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const stage = document.getElementById('cloth-stage')!;
 
+  // Цвет букв — из дизайн-токена, чтобы полотно перекрашивалось вместе
+  // с палитрой сайта; хекс — фолбэк на случай отсутствия переменной.
+  const INK =
+    getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() ||
+    '#17150f';
+
   const smoothstep = (edge0: number, edge1: number, x: number): number => {
     const t = Math.min(1, Math.max(0, (x - edge0) / (edge1 - edge0)));
     return t * t * (3 - 2 * t);
@@ -115,7 +121,7 @@
     pinned: boolean;
     originalPinned: boolean;
     char: string;
-    color = '#17150f';
+    color = '';
     downConstraint: Constraint | null = null;
     constructor(x: number, y: number, pinned: boolean, char: string) {
       this.pos = new Vec2(x, y);
@@ -211,9 +217,13 @@
     cfg.cellHeight = cfg.aheight / (cfg.gridH - 1);
 
     const roofH = small ? 52 : 72;
+    // Симуляция считает в CSS-пикселях, канвас держит физические:
+    // без этого на Retina буквы размыты. Выше 2 не поднимаем —
+    // площадь буферов растёт квадратично.
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
     const c = document.createElement('canvas');
-    c.width = stageW;
-    c.height = stageH + roofH;
+    c.width = stageW * dpr;
+    c.height = (stageH + roofH) * dpr;
     stage.innerHTML = '';
     stage.appendChild(c);
     const ctx = c.getContext('2d')!;
@@ -229,7 +239,6 @@
     // картинку сильно дешевле, чем текст с поворотом. STRIPE задаёт
     // цвета вертикальных «нитей»; сейчас полотно монохромное —
     // заказчику чёрные буквы нравятся больше цветных.
-    const INK = '#17150f';
     const STRIPE = [INK];
     const charCanvases: Record<string, HTMLCanvasElement> = {};
     const fontSize = Math.max(11, cfg.cellHeight * 1.1);
@@ -237,9 +246,9 @@
       if (ch === ' ') continue;
       for (const color of new Set(STRIPE)) {
         const off = document.createElement('canvas');
-        off.width = off.height = Math.ceil(fontSize * 1.6);
+        off.width = off.height = Math.ceil(fontSize * 1.6 * dpr);
         const octx = off.getContext('2d')!;
-        octx.font = `bold ${fontSize}px monospace`;
+        octx.font = `bold ${fontSize * dpr}px monospace`;
         octx.textAlign = 'center';
         octx.textBaseline = 'middle';
         octx.fillStyle = color;
@@ -283,9 +292,56 @@
 
     // Полотно свисает из-под карниза крыши.
     const offset = [
-      (c.width - cfg.awidth) / 2,
+      (stageW - cfg.awidth) / 2,
       roofH + 4,
     ];
+
+    function draw() {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, c.width, c.height);
+      for (const p of particles) {
+        if (!p.char || p.char === ' ') continue;
+        const img = charCanvases[`${p.char}|${p.color}`];
+        if (!img) continue;
+        const half = img.width / (2 * dpr);
+        let cos = 1;
+        let sin = 0;
+        const dc = p.downConstraint;
+        if (dc) {
+          const dx = dc.p2.pos.x - dc.p1.pos.x;
+          const dy = dc.p2.pos.y - dc.p1.pos.y;
+          const angle = Math.atan2(dy, dx) - Math.PI / 2;
+          cos = Math.cos(angle);
+          sin = Math.sin(angle);
+        }
+        // Матрица включает dpr: координаты частиц остаются в CSS-пикселях.
+        ctx.setTransform(
+          cos * dpr,
+          sin * dpr,
+          -sin * dpr,
+          cos * dpr,
+          (p.pos.x + offset[0]) * dpr,
+          (p.pos.y + offset[1]) * dpr,
+        );
+        ctx.drawImage(img, -half, -half, img.width / dpr, img.height / dpr);
+      }
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+    }
+
+    // При reduced-motion ткань «улегается» за несколько шагов и рисуется
+    // один статичный кадр. Выходим до навешивания слушателей — иначе
+    // pointermove гонял бы физику невидимой ткани, а слушатель pointerup
+    // на window утекал бы при каждом пересоздании.
+    if (reduced) {
+      for (let k = 0; k < 40; k++) {
+        for (const p of particles) p.update(cfg, 16);
+        for (let i = 0; i < cfg.iterationsPerFrame; i++) {
+          for (let j = 0; j < constraints.length; j++) constraints[j].solve();
+        }
+      }
+      draw();
+      return () => undefined;
+    }
 
     // --- мышь/палец: толкает полотно, может схватить точку ---
     const mouse = new Vec2();
@@ -300,6 +356,9 @@
     const pointerdown = (e: PointerEvent) => {
       toLocal(e);
       for (const p of particles) {
+        // Верхний закреплённый ряд — подвес полотна: его не хватаем,
+        // иначе якорь перезакрепится там, куда его перетащили.
+        if (p.pinned) continue;
         if (Math.hypot(mouse.x - p.pos.x, mouse.y - p.pos.y) < 20) {
           grabbed = p;
           grabbed.pinned = true;
@@ -335,38 +394,11 @@
     };
     c.addEventListener('pointerdown', pointerdown);
     window.addEventListener('pointerup', pointerup);
+    // Тач-скролл: браузер забирает жест себе и шлёт pointercancel
+    // вместо pointerup — без него захваченная точка зависала бы навсегда.
+    window.addEventListener('pointercancel', pointerup);
     c.addEventListener('pointermove', pointermove);
     c.style.touchAction = 'pan-y';
-
-    function draw() {
-      ctx.clearRect(0, 0, c.width, c.height);
-      for (const p of particles) {
-        if (!p.char || p.char === ' ') continue;
-        const img = charCanvases[`${p.char}|${p.color}`];
-        if (!img) continue;
-        const half = img.width / 2;
-        let cos = 1;
-        let sin = 0;
-        const dc = p.downConstraint;
-        if (dc) {
-          const dx = dc.p2.pos.x - dc.p1.pos.x;
-          const dy = dc.p2.pos.y - dc.p1.pos.y;
-          const angle = Math.atan2(dy, dx) - Math.PI / 2;
-          cos = Math.cos(angle);
-          sin = Math.sin(angle);
-        }
-        ctx.setTransform(
-          cos,
-          sin,
-          -sin,
-          cos,
-          p.pos.x + offset[0],
-          p.pos.y + offset[1],
-        );
-        ctx.drawImage(img, -half, -half);
-      }
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-    }
 
     let rafID = 0;
     let lastDelta = 0;
@@ -380,18 +412,6 @@
         for (let j = 0; j < constraints.length; j++) constraints[j].solve();
       }
       draw();
-    }
-
-    // Пусть ткань немного «уляжется» и отрисуется даже без движения мыши.
-    if (reduced) {
-      for (let k = 0; k < 40; k++) {
-        for (const p of particles) p.update(cfg, 16);
-        for (let i = 0; i < cfg.iterationsPerFrame; i++) {
-          for (let j = 0; j < constraints.length; j++) constraints[j].solve();
-        }
-      }
-      draw();
-      return () => undefined;
     }
 
     // Гоняем физику только когда секция на экране.
@@ -412,15 +432,22 @@
       io.disconnect();
       c.removeEventListener('pointerdown', pointerdown);
       window.removeEventListener('pointerup', pointerup);
+      window.removeEventListener('pointercancel', pointerup);
       c.removeEventListener('pointermove', pointermove);
     };
   }
 
   let cleanup = build();
   let resizeTimer = 0;
+  let lastWidth = window.innerWidth;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(() => {
+      // На телефонах адресная строка браузера меняет только высоту окна —
+      // из-за этого полотно сбрасывалось прямо посреди взаимодействия.
+      // Пересобираем ткань только когда изменилась ширина.
+      if (window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
       cleanup();
       cleanup = build();
     }, 250);

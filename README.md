@@ -24,7 +24,7 @@ npm run check    # проверка типов
 
 ## Где править тексты
 
-Весь текст сайта — в одном файле: **`src/content/site.ts`**.
+Почти весь текст сайта — в одном файле: **`src/content/site.ts`**.
 Компоненты только отображают эти данные, вёрстку трогать не нужно.
 
 | Что менять | Где |
@@ -39,7 +39,14 @@ npm run check    # проверка типов
 | Телефон, WhatsApp | `site.contacts` |
 
 Телефон задаётся один раз константой `PHONE_DIGITS` — из неё собираются
-и ссылка `tel:`, и ссылка на WhatsApp.
+и ссылка `tel:`, и ссылка на WhatsApp. Цены тоже заданы один раз —
+константами `PRICE_*` в начале файла.
+
+Несколько строк живут не в `site.ts`, а прямо в компонентах:
+заголовок и слова секции «Текстиль» — `src/components/LetterCloth.astro`
+(константа `TEXT`), подпись «шторки» с крышами —
+`src/components/CultureCurtain.astro`, заголовок секции «Услуги» —
+`src/components/Services.astro`.
 
 ## Видео
 
@@ -108,6 +115,6 @@ src/
 ├─ pages/index.astro   ← порядок секций
 ├─ styles/             ← global.css (токены и типографика), fonts.css
 ├─ assets/photos/      ← портреты
-├─ assets/fonts/       ← Cormorant Garamond (самохостинг)
+├─ assets/fonts/       ← Unbounded (самохостинг)
 └─ lib/url.ts          ← сборка путей с учётом base
 ```

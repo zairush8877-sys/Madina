@@ -99,7 +99,13 @@ const shapeKinds = ['circle', 'square', 'triangle'] as const;
     flex-direction: column;
     background: var(--paper);
     border: 3px solid var(--ink);
-    transition: transform 0.2s ease, box-shadow 0.25s var(--ease-out);
+    /* Этот shorthand перекрывает transition из .js .reveal (идёт позже
+       в собранном CSS), поэтому переходы появления — opacity и translate
+       с задержкой каскада — обязаны повторяться здесь. transform остаётся
+       быстрым: его пишет tilt-эффект из motion.ts. */
+    transition: transform 0.2s ease, box-shadow 0.25s var(--ease-out),
+      opacity 0.85s var(--ease-out) var(--reveal-delay, 0s),
+      translate 0.85s var(--ease-out) var(--reveal-delay, 0s);
     will-change: transform;
   }
 

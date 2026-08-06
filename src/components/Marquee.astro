@@ -34,17 +34,12 @@ const items = site.services.map((s) => s.title);
   .marquee__track {
     display: flex;
     width: max-content;
-    animation: marquee 26s linear infinite;
+    /* marquee-half — общий keyframe из global.css. */
+    animation: marquee-half 26s linear infinite;
   }
 
   .marquee:hover .marquee__track {
     animation-play-state: paused;
-  }
-
-  @keyframes marquee {
-    to {
-      transform: translateX(-50%);
-    }
   }
 
   .marquee__seq {

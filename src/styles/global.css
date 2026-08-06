@@ -12,7 +12,6 @@
   --red: #e2452d;
   --blue: #2957a4;
   --yellow: #f0b428;
-  --line: #17150f;
 
   --font-display: 'Unbounded', 'Arial Black', sans-serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
@@ -32,6 +31,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Якорные секции не должны прятаться под липкой шапкой:
+     на узких экранах она переносится в две строки (~90px). */
+  scroll-padding-top: 6.5rem;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -44,8 +46,16 @@ body {
   line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  /* Отступ под фиксированную «шторку» с крышами и ниткой букв. */
-  padding-bottom: 104px;
+  /* Отступ под фиксированную «шторку» с крышами и ниткой букв.
+     Точную высоту видимой части меряет скрипт CultureCurtain
+     и кладёт в --curtain-peek; 104/84px — фолбэк без JavaScript. */
+  padding-bottom: var(--curtain-peek, 104px);
+}
+
+@media (max-width: 640px) {
+  body {
+    padding-bottom: var(--curtain-peek, 84px);
+  }
 }
 
 img,
@@ -244,20 +254,30 @@ p:last-child {
   }
 }
 
+/* Бесшовная бегущая строка: контент задублирован дважды, трек
+   сдвигается ровно на половину. Используют Marquee и CultureCurtain. */
+@keyframes marquee-half {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 /* Scroll-reveal ------------------------------------------------- */
 
 /* Скрытое состояние применяется только при работающем JavaScript
-   (класс .js ставит инлайн-скрипт в Base.astro) — иначе контент виден сразу. */
+   (класс .js ставит инлайн-скрипт в Base.astro) — иначе контент виден сразу.
+   Сдвиг сделан свойством translate (а не transform), чтобы не спорить
+   с tilt-эффектом карточек, который пишет в transform из motion.ts. */
 .js .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.85s var(--ease-out), transform 0.85s var(--ease-out);
+  translate: 0 28px;
+  transition: opacity 0.85s var(--ease-out), translate 0.85s var(--ease-out);
   transition-delay: var(--reveal-delay, 0s);
 }
 
 .js .reveal.is-visible {
   opacity: 1;
-  transform: none;
+  translate: none;
 }
 
 /* Focus & a11y -------------------------------------------------- */
@@ -308,6 +328,6 @@ p:last-child {
   }
   .js .reveal {
     opacity: 1;
-    transform: none;
+    translate: none;
   }
 }

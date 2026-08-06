@@ -1,0 +1,58 @@
+---
+/**
+ * Пунктирная орбита со «спутником», облетающим содержимое блока.
+ * Родитель должен быть position: relative. Один компонент вместо
+ * копий в Hero и VideoSection — их константы уже успевали разъехаться.
+ */
+interface Props {
+  /** Цвет спутника. */
+  color?: string;
+  /** Цвет обводки спутника — подбирается под фон секции. */
+  ring?: string;
+  /** Длительность полного оборота. */
+  duration?: string;
+  /** Крутить против часовой стрелки. */
+  reverse?: boolean;
+}
+
+const {
+  color = 'var(--blue)',
+  ring = 'var(--paper)',
+  duration = '28s',
+  reverse = false,
+} = Astro.props;
+---
+
+<span
+  class:list={['orbit', { 'orbit--reverse': reverse }]}
+  style={`--sat-color: ${color}; --sat-ring: ${ring}; --orbit-duration: ${duration};`}
+  aria-hidden="true"
+>
+  <span class="orbit__satellite"></span>
+</span>
+
+<style>
+  .orbit {
+    position: absolute;
+    inset: -46px;
+    border: 2px dashed rgba(23, 21, 15, 0.35);
+    border-radius: 50%;
+    animation: spin var(--orbit-duration) linear infinite;
+    pointer-events: none;
+  }
+
+  .orbit--reverse {
+    animation-name: spin-back;
+  }
+
+  .orbit__satellite {
+    position: absolute;
+    top: -13px;
+    left: calc(50% - 13px);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--sat-color);
+    border: 3px solid var(--sat-ring);
+  }
+</style>

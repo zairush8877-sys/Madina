@@ -1,9 +1,9 @@
 ---
 /**
  * «Шторка» у нижней кромки экрана: чёрный силуэт крыш разных культур
- * на жёлтой ленте, под крышами — всегда видимая «нитка» латинских букв,
- * бегущая в обратную сторону. Наведение мыши (или тап) дооткрывает
- * шторку с подписью.
+ * на бумажном фоне, под крышами — всегда видимая «нитка» латинских букв,
+ * бегущая в обратную сторону. Наведение мыши (или тап по ручке)
+ * дооткрывает шторку с подписью.
  *
  * Слева направо в силуэте: русская церковь с луковичным куполом,
  * европейские щипцовые дома, японская пагода, минарет и купол,
@@ -99,6 +99,26 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     const open = curtain!.classList.toggle('is-open');
     handle.setAttribute('aria-expanded', String(open));
   });
+
+  // Высота видимой в закрытом состоянии части (крыши + нитка букв)
+  // зависит от размера шрифта, поэтому меряем её по факту и кладём
+  // в --curtain-peek: от неё же считается нижний отступ страницы —
+  // контент и шторка никогда не перекрываются и не расходятся.
+  const track = curtain?.querySelector('.curtain__alpha-track');
+  const setPeek = () => {
+    if (!curtain || !track) return;
+    const peek =
+      track.getBoundingClientRect().bottom -
+      curtain.getBoundingClientRect().top;
+    document.documentElement.style.setProperty(
+      '--curtain-peek',
+      `${Math.ceil(peek) + 6}px`,
+    );
+  };
+  setPeek();
+  window.addEventListener('resize', setPeek);
+  // Unbounded может доехать позже первого замера — перемеряем по загрузке.
+  document.fonts?.ready.then(setPeek);
 </script>
 
 <style>
@@ -108,13 +128,23 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     right: 0;
     bottom: 0;
     z-index: 50;
-    /* Видны крыши и нитка латинских букв; ховер дооткрывает подпись. */
-    translate: 0 calc(100% - 104px);
+    /* Видны крыши и нитка латинских букв; ховер дооткрывает подпись.
+       Точное значение --curtain-peek ставит скрипт выше. */
+    translate: 0 calc(100% - var(--curtain-peek, 104px));
     transition: translate 0.55s var(--ease-out);
   }
 
-  .curtain:hover,
-  .curtain:focus-within,
+  /* Наведение открывает шторку только там, где ховер настоящий:
+     на тач-экранах эмуляция ховера залипает после тапа.
+     Открытие с клавиатуры и тапом делает кнопка-ручка (.is-open) —
+     :focus-within тут нельзя: пока фокус на кнопке, шторку было бы
+     не закрыть повторным нажатием. */
+  @media (hover: hover) {
+    .curtain:hover {
+      translate: 0 0;
+    }
+  }
+
   .curtain.is-open {
     translate: 0 0;
   }
@@ -155,18 +185,8 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
     display: flex;
     width: max-content;
     color: var(--ink);
-    animation: skyline 40s linear infinite;
-  }
-
-  .curtain:hover .curtain__skyline,
-  .curtain.is-open .curtain__skyline {
-    animation-play-state: running;
-  }
-
-  @keyframes skyline {
-    to {
-      transform: translateX(-50%);
-    }
+    /* Ленты бегут всегда — шторка видна у кромки даже закрытой. */
+    animation: marquee-half 40s linear infinite;
   }
 
   .curtain__tile {
@@ -186,13 +206,7 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   .curtain__alpha-track {
     display: flex;
     width: max-content;
-    animation: alpha-run 32s linear infinite reverse;
-  }
-
-  @keyframes alpha-run {
-    to {
-      transform: translateX(-50%);
-    }
+    animation: marquee-half 32s linear infinite reverse;
   }
 
   .curtain__alpha-seq {
@@ -229,7 +243,7 @@ const alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
   @media (max-width: 640px) {
     .curtain {
-      translate: 0 calc(100% - 84px);
+      translate: 0 calc(100% - var(--curtain-peek, 84px));
     }
     .curtain__tile {
       height: 42px;

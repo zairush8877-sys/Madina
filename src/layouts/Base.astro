@@ -12,7 +12,12 @@ interface Props {
 const { title = site.meta.title, description = site.meta.description } =
   Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+// Со слэшем на конце: GitHub Pages отвечает 301-редиректом на «…/Madina»
+// без слэша, а canonical не должен вести через редирект.
+const canonicalPath = Astro.url.pathname.endsWith('/')
+  ? Astro.url.pathname
+  : `${Astro.url.pathname}/`;
+const canonical = new URL(canonicalPath, Astro.site).toString();
 const ogImage = new URL(withBase('og-image.jpg'), Astro.site).toString();
 ---
 

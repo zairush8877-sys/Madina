@@ -8,6 +8,12 @@
 
 const PHONE_DIGITS = '79162951199';
 
+// Цены из голосовых сообщений задаются один раз здесь: из констант
+// собираются и карточки «Стоимость», и описание для поисковиков.
+const PRICE_FULL = '3 500 ₽';
+const PRICE_DRAWINGS = '1 500 ₽';
+const PRICE_PROCUREMENT = '10 %';
+
 export interface Service {
   title: string;
   summary: string;
@@ -27,7 +33,7 @@ export interface PriceItem {
 }
 
 export interface VideoConfig {
-  /** Пока false — секция с видео не выводится на страницу. */
+  /** Секция с видео выводится на страницу только при `true`. */
   enabled: boolean;
   eyebrow: string;
   title: string;
@@ -55,7 +61,7 @@ export const site = {
     title: 'Мадина Джапуева — дизайнер интерьеров в Нальчике',
     description:
       'Дизайн-проект квартиры, комплектация, авторский надзор и ремонт под ключ ' +
-      'в Нальчике. Технические чертежи и 3D-визуализация — от 1500 ₽ за м².',
+      `в Нальчике. Технические чертежи и 3D-визуализация — от ${PRICE_DRAWINGS} за м².`,
   },
 
   person: {
@@ -243,19 +249,19 @@ export const site = {
     items: [
       {
         title: 'Дизайн-проект с визуализацией',
-        price: '3 500 ₽',
+        price: PRICE_FULL,
         unit: 'за м²',
         note: 'Технические чертежи и 3D-визуализация. Полный состав проекта фиксируем в договоре.',
       },
       {
         title: 'Дизайн-проект без визуализации',
-        price: '1 500 ₽',
+        price: PRICE_DRAWINGS,
         unit: 'за м²',
         note: 'Планировочные решения и технические чертежи для строителей.',
       },
       {
         title: 'Комплектация объекта',
-        price: '10 %',
+        price: PRICE_PROCUREMENT,
         note: 'От стоимости материалов. Подбор, закупка и приёмка всего наполнения.',
       },
     ] satisfies PriceItem[],
@@ -265,9 +271,9 @@ export const site = {
   },
 
   /**
-   * Видео из папки Google Drive. Пока файл не подключён — секция не рендерится.
-   * Чтобы включить: положите ролик и постер в `public/video/`, пропишите их
-   * в `video.src` и `video.poster` выше и поставьте `enabled: true`.
+   * Видео из папки Google Drive (снято вертикально, 9:16). Файл и постер
+   * лежат в `public/video/` — как заменить ролик, описано в README.
+   * Выключить секцию: `enabled: false` в объекте `video` выше.
    */
   video,
 
@@ -285,5 +291,3 @@ export const site = {
     preferred: 'Предпочтительный способ связи — WhatsApp',
   },
 } as const;
-
-export type Site = typeof site;
