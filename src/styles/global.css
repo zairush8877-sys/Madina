@@ -1,27 +1,29 @@
 /* ---------------------------------------------------------------
-   Design tokens — kinetic bauhaus
-   Cream paper, ink black, primary red / blue / yellow. Geometric
-   shapes are alive: they drift, spin and follow the cursor.
+   Design tokens — quiet luxury
+   Белый фон, тёплый графит, латунь и пудровый бархат. Предметы
+   интерьера — стулья, ручки, светильники — живут и двигаются.
    --------------------------------------------------------------- */
 :root {
-  --paper: #f4efe6;
-  --paper-2: #ece5d7;
-  --ink: #17150f;
-  --ink-2: #4d4a42;
-  --ink-3: #8b8578;
-  --red: #e2452d;
-  --blue: #2957a4;
-  --yellow: #f0b428;
-  --line: #17150f;
+  --paper: #ffffff;
+  --paper-2: #f6f2ec;
+  --ink: #171310;
+  --ink-2: #544e46;
+  --ink-3: #99907e;
+  --brass: #a8813c;
+  --brass-2: #c9a45c;
+  --bronze: #6f5426;
+  --blush: #ead9cd;
+  --hairline: rgba(23, 19, 16, 0.16);
 
-  --font-display: 'Unbounded', 'Arial Black', sans-serif;
+  --font-display: 'Cormorant', 'Times New Roman', Georgia, serif;
   --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
 
   --wrap: 1200px;
   --gutter: clamp(1.25rem, 5vw, 3.5rem);
-  --section-y: clamp(4rem, 9vw, 7rem);
+  --section-y: clamp(4.5rem, 10vw, 8rem);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-soft: 0 30px 60px -35px rgba(23, 19, 16, 0.35);
 }
 
 *,
@@ -32,7 +34,17 @@
 
 html {
   scroll-behavior: smooth;
+  /* Якорные секции не должны прятаться под липкой шапкой:
+     на узких экранах она переносится в две строки (~90px). */
+  scroll-padding-top: 6.5rem;
   -webkit-text-size-adjust: 100%;
+}
+
+/* До ~356px телефон переносится на свою строку — шапка трёхстрочная. */
+@media (max-width: 360px) {
+  html {
+    scroll-padding-top: 7.75rem;
+  }
 }
 
 body {
@@ -41,11 +53,19 @@ body {
   color: var(--ink);
   font-family: var(--font-body);
   font-size: clamp(0.98rem, 0.95rem + 0.15vw, 1.05rem);
-  line-height: 1.75;
+  line-height: 1.8;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  /* Отступ под фиксированную «шторку» с крышами и ниткой букв. */
-  padding-bottom: 104px;
+  /* Отступ под фиксированную «шторку» с крышами и ниткой букв.
+     Точную высоту видимой части меряет скрипт CultureCurtain
+     и кладёт в --curtain-peek; 104/84px — фолбэк без JavaScript. */
+  padding-bottom: var(--curtain-peek, 104px);
+}
+
+@media (max-width: 640px) {
+  body {
+    padding-bottom: var(--curtain-peek, 84px);
+  }
 }
 
 img,
@@ -63,23 +83,24 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.12;
+  font-weight: 550;
+  line-height: 1.04;
   margin: 0;
   text-wrap: balance;
-  text-transform: uppercase;
+  letter-spacing: 0.005em;
 }
 
 h1 {
-  font-size: clamp(1.9rem, 1rem + 4.2vw, 4rem);
+  font-size: clamp(2.4rem, 1.3rem + 3.7vw, 4.3rem);
 }
 
 h2 {
-  font-size: clamp(1.3rem, 0.95rem + 1.9vw, 2.3rem);
+  font-size: clamp(2rem, 1.4rem + 2.8vw, 3.6rem);
 }
 
 h3 {
-  font-size: clamp(0.95rem, 0.88rem + 0.4vw, 1.12rem);
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.55rem);
+  font-weight: 600;
 }
 
 p {
@@ -92,8 +113,43 @@ p:last-child {
 }
 
 ::selection {
-  background: var(--yellow);
+  background: var(--blush);
   color: var(--ink);
+}
+
+/* Акценты ----------------------------------------------------- */
+
+.accent {
+  font-style: italic;
+  font-weight: 500;
+  color: var(--brass);
+}
+
+/* Латунный отблеск, медленно гуляющий по слову. */
+.shimmer {
+  background: linear-gradient(
+    100deg,
+    var(--brass) 0%,
+    var(--brass) 38%,
+    var(--brass-2) 50%,
+    var(--brass) 62%,
+    var(--brass) 100%
+  );
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 5.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 110% 0;
+  }
+  50% {
+    background-position: -10% 0;
+  }
 }
 
 /* --------------------------------------------------------------- */
@@ -111,26 +167,29 @@ p:last-child {
 }
 
 .eyebrow {
-  display: inline-block;
-  font-family: var(--font-display);
-  font-size: 0.62rem;
-  font-weight: 400;
-  letter-spacing: 0.22em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: 0.66rem;
+  font-weight: 650;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  padding: 0.5rem 1rem;
-  border: 2px solid var(--ink);
-  background: var(--paper);
-  margin: 0 0 1.5rem;
+  color: var(--bronze);
+  margin: 0 0 1.6rem;
+}
+
+/* Тонкая латунная линия перед надзаголовком. */
+.eyebrow::before {
+  content: '';
+  width: 2.6rem;
+  height: 1px;
+  background: var(--brass);
 }
 
 .lede {
-  font-size: clamp(1rem, 0.97rem + 0.3vw, 1.16rem);
+  font-size: clamp(1.02rem, 0.98rem + 0.3vw, 1.18rem);
   color: var(--ink-2);
   max-width: 58ch;
-}
-
-.accent-red {
-  color: var(--red);
 }
 
 /* Buttons ------------------------------------------------------- */
@@ -141,84 +200,123 @@ p:last-child {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 1.05rem 2.3rem;
-  border: 2px solid var(--ink);
+  padding: 1.1rem 2.6rem;
+  border: 1px solid var(--ink);
   background: var(--ink);
   color: var(--paper);
-  font-family: var(--font-display);
-  font-size: 0.68rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 650;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 4px 4px 0 0 var(--red);
-  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out),
-    background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.35s var(--ease-out),
+    border-color 0.35s var(--ease-out), color 0.35s var(--ease-out),
+    box-shadow 0.35s var(--ease-out), translate 0.35s var(--ease-out);
 }
 
 .btn:hover,
 .btn:focus-visible {
-  transform: translate(-2px, -2px);
-  box-shadow: 7px 7px 0 0 var(--red);
+  background: var(--bronze);
+  border-color: var(--bronze);
+  translate: 0 -2px;
+  box-shadow: var(--shadow-soft);
 }
 
 .btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 0 var(--red);
+  translate: 0 0;
 }
 
 .btn--ghost {
   background: transparent;
   color: var(--ink);
-  box-shadow: 4px 4px 0 0 var(--yellow);
+  border-color: var(--hairline);
 }
 
 .btn--ghost:hover,
 .btn--ghost:focus-visible {
-  box-shadow: 7px 7px 0 0 var(--yellow);
+  background: transparent;
+  color: var(--bronze);
+  border-color: var(--brass);
+  box-shadow: none;
 }
 
-/* Floating geometric shapes ------------------------------------- */
+/* Живые предметы ------------------------------------------------ */
 
-/* Общий слой с фигурами: absolute внутри section (overflow скрыт
-   на самой секции). Каждая фигура дрейфует своим keyframe'ом,
-   а [data-depth] дополнительно смещается за курсором (motion.ts). */
-.shapes {
+/* Слой с предметами: absolute внутри секции (overflow скрыт на ней).
+   Каждый предмет анимируется своим keyframe'ом, а [data-depth]
+   дополнительно плывёт за курсором (motion.ts). */
+.decor {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
 }
 
-.shape {
-  position: absolute;
-  will-change: transform;
-}
-
-.shape--circle {
-  border-radius: 50%;
-}
-
-.shape--ring {
-  border-radius: 50%;
-  background: transparent !important;
+.decor svg {
+  display: block;
+  overflow: visible;
 }
 
 /* Непрерывные движения. Разные длительности → живой, несинхронный фон. */
-@keyframes drift {
+
+/* Маятник от верхней точки — подвесные светильники, крючки. */
+@keyframes sway {
+  0%,
+  100% {
+    rotate: 5deg;
+  }
+  50% {
+    rotate: -5deg;
+  }
+}
+
+/* Кресло-качалка. */
+@keyframes rock {
+  0%,
+  100% {
+    rotate: 6deg;
+  }
+  50% {
+    rotate: -4deg;
+  }
+}
+
+/* Дверная ручка: пауза — нажалась — отпустилась. */
+@keyframes press {
+  0%,
+  55%,
+  100% {
+    rotate: 0deg;
+  }
+  63%,
+  80% {
+    rotate: -24deg;
+  }
+}
+
+/* Свободное парение. */
+@keyframes floaty {
   0%,
   100% {
     translate: 0 0;
   }
-  25% {
-    translate: 3% -6%;
+  33% {
+    translate: 2% -5%;
+  }
+  66% {
+    translate: -2% 3%;
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    translate: 0 0;
   }
   50% {
-    translate: -2% 4%;
-  }
-  75% {
-    translate: -5% -3%;
+    translate: 0 -14px;
   }
 }
 
@@ -234,36 +332,49 @@ p:last-child {
   }
 }
 
-@keyframes bob {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-  50% {
-    translate: 0 -18px;
+/* Бесшовная бегущая строка: контент задублирован дважды, трек
+   сдвигается ровно на половину. Используют Marquee и CultureCurtain. */
+@keyframes marquee-half {
+  to {
+    transform: translateX(-50%);
   }
 }
 
 /* Scroll-reveal ------------------------------------------------- */
 
 /* Скрытое состояние применяется только при работающем JavaScript
-   (класс .js ставит инлайн-скрипт в Base.astro) — иначе контент виден сразу. */
+   (класс .js ставит инлайн-скрипт в Base.astro) — иначе контент виден сразу.
+   Сдвиг сделан свойством translate (а не transform), чтобы не спорить
+   с tilt-эффектом карточек, который пишет в transform из motion.ts. */
 .js .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity 0.85s var(--ease-out), transform 0.85s var(--ease-out);
+  translate: 0 28px;
+  transition: opacity 0.85s var(--ease-out), translate 0.85s var(--ease-out);
   transition-delay: var(--reveal-delay, 0s);
 }
 
 .js .reveal.is-visible {
   opacity: 1;
-  transform: none;
+  translate: none;
+}
+
+/* Линии, прорисовывающиеся при появлении секции. */
+.js .reveal .draw-line,
+.js .draw-line.reveal {
+  scale: 0 1;
+  transform-origin: left center;
+  transition: scale 1.2s var(--ease-out) 0.3s;
+}
+
+.js .reveal.is-visible .draw-line,
+.js .draw-line.reveal.is-visible {
+  scale: 1 1;
 }
 
 /* Focus & a11y -------------------------------------------------- */
 
 :where(a, button, summary, [tabindex]):focus-visible {
-  outline: 3px solid var(--blue);
+  outline: 2px solid var(--brass);
   outline-offset: 3px;
 }
 
@@ -308,6 +419,10 @@ p:last-child {
   }
   .js .reveal {
     opacity: 1;
-    transform: none;
+    translate: none;
+  }
+  .js .reveal .draw-line,
+  .js .draw-line.reveal {
+    scale: 1 1;
   }
 }

@@ -1,25 +1,21 @@
 ---
 import { Picture } from 'astro:assets';
+import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
-import heroPortrait from '../assets/photos/portrait-evening-02.jpg';
+import heroInterior from '../assets/photos/lux-arch-hall.jpg';
 
 const titleLines = site.hero.title.split('\n');
 ---
 
 <section class="hero" id="top">
-  <!-- Живые фигуры: дрейфуют сами по себе и плывут за курсором. -->
-  <div class="shapes" aria-hidden="true">
-    <span
-      class="shape shape--circle hero-sh1"
-      data-depth="0.35"
-      style="background: var(--yellow)"></span>
-    <span class="shape shape--ring hero-sh2" data-depth="0.2"></span>
-    <span class="shape hero-sh3" data-depth="0.5"></span>
-    <span
-      class="shape shape--circle hero-sh4"
-      data-depth="0.7"
-      style="background: var(--red)"></span>
-    <span class="shape hero-sh5" data-depth="0.28"></span>
+  <!-- Живые предметы: светильник качается, стул покачивается,
+       дверная ручка время от времени нажимается. Все плывут за курсором. -->
+  <div class="decor" aria-hidden="true">
+    <LuxObject name="pendant" class="hero-obj hero-obj--pendant sway" depth={0.22} />
+    <LuxObject name="chair" class="hero-obj hero-obj--chair rock" depth={0.4} />
+    <LuxObject name="lever" class="hero-obj hero-obj--lever floaty" depth={0.55} />
+    <LuxObject name="vase" class="hero-obj hero-obj--vase floaty" depth={0.18} />
+    <LuxObject name="key" class="hero-obj hero-obj--key sway-slow" depth={0.32} />
   </div>
 
   <div class="wrap hero__inner">
@@ -31,7 +27,7 @@ const titleLines = site.hero.title.split('\n');
             <>
               {i > 0 && <br />}
               {i === titleLines.length - 1 ? (
-                <span class="accent-red">{line}</span>
+                <em class="accent shimmer">{line}</em>
               ) : (
                 line
               )}
@@ -56,14 +52,11 @@ const titleLines = site.hero.title.split('\n');
     </div>
 
     <div class="hero__figure reveal" style="--reveal-delay: 0.18s">
-      <span class="hero__orbit" aria-hidden="true">
-        <span class="hero__satellite"></span>
-      </span>
       <Picture
-        src={heroPortrait}
-        alt={`${site.person.fullName} — ${site.person.role.toLowerCase()}`}
-        widths={[420, 700, 900]}
-        sizes="(max-width: 900px) 76vw, 34vw"
+        src={heroInterior}
+        alt="Кремовый холл с арочной нишей, латунной консолью и подвесным светильником"
+        widths={[420, 700, 1000]}
+        sizes="(max-width: 900px) 76vw, 36vw"
         formats={['avif', 'webp']}
         loading="eager"
         fetchpriority="high"
@@ -75,54 +68,48 @@ const titleLines = site.hero.title.split('\n');
 <style>
   .hero {
     position: relative;
-    padding-block: clamp(3.5rem, 8vw, 6.5rem);
+    padding-block: clamp(3.5rem, 8vw, 6.5rem) clamp(4rem, 9vw, 7rem);
     overflow: hidden;
   }
 
-  /* --- фигуры --- */
-  .hero-sh1 {
-    width: 340px;
-    height: 340px;
-    top: -90px;
-    right: 6%;
-    animation: drift 17s ease-in-out infinite;
+  /* --- предметы --- */
+  :global(.hero-obj--pendant) {
+    width: 64px;
+    top: -6px;
+    left: 4%;
   }
 
-  .hero-sh2 {
-    width: 480px;
-    height: 480px;
-    border: 2px dashed var(--blue);
-    bottom: -190px;
-    left: -140px;
-    animation: spin 50s linear infinite;
+  :global(.hero-obj--chair) {
+    width: 72px;
+    bottom: 7%;
+    right: 3%;
+    color: var(--ink-3);
   }
 
-  .hero-sh3 {
-    width: 0;
-    height: 0;
-    border-left: 95px solid transparent;
-    border-right: 95px solid transparent;
-    border-bottom: 160px solid var(--blue);
-    bottom: 6%;
-    right: -40px;
-    animation: drift 21s ease-in-out infinite reverse;
+  :global(.hero-obj--lever) {
+    width: 96px;
+    top: 56%;
+    left: -14px;
+    color: var(--brass);
   }
 
-  .hero-sh4 {
-    width: 60px;
-    height: 60px;
-    top: 22%;
-    left: 42%;
-    animation: bob 6s ease-in-out infinite;
+  :global(.hero-obj--vase) {
+    width: 54px;
+    top: 11%;
+    right: 8.5%;
+    color: var(--ink-3);
   }
 
-  .hero-sh5 {
-    width: 120px;
-    height: 26px;
-    background: var(--red);
-    top: 62%;
-    left: -30px;
-    animation: drift 14s ease-in-out infinite;
+  :global(.hero-obj--key) {
+    width: 30px;
+    top: 47%;
+    left: 47.5%;
+  }
+
+  /* Серифный заголовок чуть компактнее общего h1, чтобы строка
+     «Интерьеры, в которых» не ломалась посреди. */
+  .hero__text h1 {
+    font-size: clamp(2.2rem, 1.1rem + 2.9vw, 3.4rem);
   }
 
   /* --- сетка героя --- */
@@ -135,51 +122,41 @@ const titleLines = site.hero.title.split('\n');
   }
 
   .hero__lede {
-    margin-top: 1.6rem;
+    margin-top: 1.7rem;
   }
 
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 1.1rem;
-    margin-top: 2.4rem;
+    margin-top: 2.6rem;
   }
 
+  /* Фото в арочной раме — мотив с референсов; за ним тонкий
+     латунный контур-дубль, чуть смещённый. */
   .hero__figure {
     position: relative;
     justify-self: center;
-    width: min(20.5rem, 100%);
+    width: min(21.5rem, 100%);
   }
 
-  .hero__figure :global(img) {
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    object-position: center 20%;
-    border: 4px solid var(--ink);
-    box-shadow: 10px 10px 0 0 var(--yellow);
-  }
-
-  /* Орбита со «спутником»: пунктирное кольцо и синий кружок,
-     непрерывно облетающий портрет. */
-  .hero__orbit {
+  .hero__figure::before {
+    content: '';
     position: absolute;
-    inset: -46px;
-    border: 2px dashed rgba(23, 21, 15, 0.35);
-    border-radius: 50%;
-    animation: spin 28s linear infinite;
+    inset: 0;
+    translate: 16px 16px;
+    border: 1px solid var(--brass);
+    border-radius: 999px 999px 0 0;
     pointer-events: none;
   }
 
-  .hero__satellite {
-    position: absolute;
-    top: -13px;
-    left: calc(50% - 13px);
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: var(--blue);
-    border: 3px solid var(--paper);
+  .hero__figure :global(img) {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4.1;
+    object-fit: cover;
+    border-radius: 999px 999px 0 0;
+    box-shadow: var(--shadow-soft);
   }
 
   @media (max-width: 900px) {
@@ -188,12 +165,25 @@ const titleLines = site.hero.title.split('\n');
     }
     .hero__figure {
       order: -1;
-      width: min(16rem, 82%);
+      width: min(17rem, 84%);
       margin-inline: auto;
-      margin-top: 1.5rem;
+      margin-top: 1.25rem;
     }
-    .hero-sh2 {
+    :global(.hero-obj--key),
+    :global(.hero-obj--vase),
+    :global(.hero-obj--lever) {
       display: none;
+    }
+    :global(.hero-obj--pendant) {
+      left: 7%;
+      top: 0;
+      width: 48px;
+    }
+    :global(.hero-obj--chair) {
+      bottom: auto;
+      top: 4%;
+      right: 3%;
+      width: 48px;
     }
   }
 </style>

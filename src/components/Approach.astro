@@ -1,14 +1,12 @@
 ---
+import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
 ---
 
 <section class="section approach-section" id="approach">
-  <div class="shapes" aria-hidden="true">
-    <span
-      class="shape shape--circle app-sh1"
-      data-depth="0.3"
-      style="background: var(--blue)"></span>
-    <span class="shape shape--ring app-sh2" data-depth="0.18"></span>
+  <div class="decor" aria-hidden="true">
+    <LuxObject name="pendant" class="app-obj app-obj--pendant sway-slow" depth={0.25} />
+    <LuxObject name="mirror" class="app-obj app-obj--mirror floaty" depth={0.15} />
   </div>
 
   <div class="wrap">
@@ -23,10 +21,12 @@ import { site } from '../content/site';
         site.approach.items.map((item, i) => (
           <article
             class="approach__item reveal"
-            style={`--reveal-delay: ${(i % 2) * 0.08}s`}
+            style={`--reveal-delay: ${((i % 2) * 0.08).toFixed(2)}s`}
           >
-            <span class="approach__beam" aria-hidden="true" />
-            <span class="approach__index">{String(i + 1).padStart(2, '0')}</span>
+            <span class="approach__beam draw-line" aria-hidden="true" />
+            <span class="approach__index" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
             <h3>{item.title}</h3>
             <p>{item.body}</p>
           </article>
@@ -39,25 +39,22 @@ import { site } from '../content/site';
 <style>
   .approach-section {
     background: var(--paper-2);
-    border-block: 2px solid var(--ink);
+    border-block: 1px solid var(--hairline);
     overflow: hidden;
   }
 
-  .app-sh1 {
-    width: 54px;
-    height: 54px;
-    top: 10%;
-    right: 6%;
-    animation: bob 7s ease-in-out infinite;
+  :global(.app-obj--pendant) {
+    width: 56px;
+    top: -4px;
+    right: 9%;
   }
 
-  .app-sh2 {
-    width: 340px;
-    height: 340px;
-    border: 2px dashed var(--red);
-    bottom: -140px;
-    left: -110px;
-    animation: spin 48s linear infinite;
+  :global(.app-obj--mirror) {
+    width: 92px;
+    bottom: -30px;
+    left: 3%;
+    color: var(--ink-3);
+    opacity: 0.6;
   }
 
   .approach__head {
@@ -81,34 +78,23 @@ import { site } from '../content/site';
     padding-top: 1.6rem;
   }
 
-  /* Цветная линия, «выезжающая» при появлении блока.
-     Свёрнута только при работающем JS — без него видна сразу. */
+  /* Латунная линия, прорисовывающаяся при появлении блока
+     (механика .draw-line из global.css; без JS видна сразу). */
   .approach__beam {
     position: absolute;
     top: 0;
     left: 0;
-    height: 6px;
+    height: 1px;
     width: 100%;
-    background: linear-gradient(
-      90deg,
-      var(--red) 0 33%,
-      var(--yellow) 33% 66%,
-      var(--blue) 66% 100%
-    );
-    transform-origin: left;
-    transition: transform 1s var(--ease-out) 0.2s;
-  }
-
-  :global(.js) .approach__item:not(.is-visible) .approach__beam {
-    transform: scaleX(0);
+    background: linear-gradient(90deg, var(--brass), var(--brass-2) 60%, transparent);
   }
 
   .approach__index {
     font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 2rem;
-    color: transparent;
-    -webkit-text-stroke: 2px var(--ink);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 2.4rem;
+    color: var(--brass);
     line-height: 1;
     display: block;
     margin-bottom: 0.9rem;

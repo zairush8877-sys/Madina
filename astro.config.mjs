@@ -14,7 +14,9 @@ const BASE = process.env.BASE_PATH ?? '/Madina';
 export default defineConfig({
   site: SITE,
   base: BASE,
-  trailingSlash: 'ignore',
+  // 'always' — как отдаёт GitHub Pages; иначе sitemap перечисляет
+  // и «…/Madina», и «…/Madina/», а canonical ведёт через 301.
+  trailingSlash: 'always',
   integrations: [sitemap()],
   image: {
     // Local sharp service; formats are chosen per <Image /> call.

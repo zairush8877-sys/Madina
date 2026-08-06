@@ -1,21 +1,19 @@
 ---
+import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
-
-// Каждой карточке — своя фигура-маркер одного из трёх основных цветов.
-const shapeKinds = ['circle', 'square', 'triangle'] as const;
 ---
 
 <section class="section services-section" id="services">
-  <div class="shapes" aria-hidden="true">
-    <span class="shape shape--ring svc-sh1" data-depth="0.22"></span>
-    <span class="shape svc-sh2" data-depth="0.45"></span>
+  <div class="decor" aria-hidden="true">
+    <LuxObject name="key" class="svc-obj svc-obj--key sway" depth={0.3} />
+    <LuxObject name="lever" class="svc-obj svc-obj--lever floaty" depth={0.45} />
   </div>
 
   <div class="wrap">
     <header class="services__head">
       <p class="eyebrow reveal">Услуги</p>
       <h2 class="reveal" style="--reveal-delay: 0.06s">
-        От первого чертежа<br />до <span class="accent-red">последней ручки</span>
+        От первого чертежа<br />до <em class="accent">последней ручки</em>
       </h2>
       <p class="lede reveal" style="--reveal-delay: 0.12s">
         Можно взять только проект, а можно передать мне весь объект — вместе
@@ -29,13 +27,12 @@ const shapeKinds = ['circle', 'square', 'triangle'] as const;
           <li
             class="service reveal"
             data-tilt
-            style={`--reveal-delay: ${(i % 4) * 0.07}s`}
+            style={`--reveal-delay: ${((i % 4) * 0.07).toFixed(2)}s`}
           >
-            <span
-              class={`service__shape service__shape--${shapeKinds[i % 3]}`}
-              aria-hidden="true"
-            />
-            <span class="service__num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="service__num" aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span class="service__gem" aria-hidden="true" />
             <h3 class="service__title">{service.title}</h3>
             <p class="service__summary">{service.summary}</p>
             <ul class="service__points" role="list">
@@ -55,22 +52,17 @@ const shapeKinds = ['circle', 'square', 'triangle'] as const;
     overflow: hidden;
   }
 
-  .svc-sh1 {
-    width: 380px;
-    height: 380px;
-    border: 2px dashed var(--blue);
-    bottom: -140px;
-    right: -120px;
-    animation: spin 56s linear infinite;
+  :global(.svc-obj--key) {
+    width: 34px;
+    top: 9%;
+    right: 5%;
   }
 
-  .svc-sh2 {
-    width: 90px;
-    height: 20px;
-    background: var(--yellow);
-    top: 12%;
-    right: 4%;
-    animation: drift 16s ease-in-out infinite;
+  :global(.svc-obj--lever) {
+    width: 88px;
+    bottom: 6%;
+    left: -12px;
+    color: var(--ink-3);
   }
 
   .services__head {
@@ -94,60 +86,57 @@ const shapeKinds = ['circle', 'square', 'triangle'] as const;
 
   .service {
     position: relative;
-    padding: 1.9rem 1.7rem;
+    padding: 2rem 1.8rem;
     display: flex;
     flex-direction: column;
     background: var(--paper);
-    border: 3px solid var(--ink);
-    transition: transform 0.2s ease, box-shadow 0.25s var(--ease-out);
+    border: 1px solid var(--hairline);
+    /* Shorthand перекрывает transition из .js .reveal (идёт позже
+       в собранном CSS), поэтому переходы появления — opacity и translate
+       с задержкой каскада — обязаны повторяться здесь. transform остаётся
+       быстрым: его пишет tilt-эффект из motion.ts. */
+    transition: transform 0.2s ease, box-shadow 0.35s var(--ease-out),
+      border-color 0.35s var(--ease-out),
+      opacity 0.85s var(--ease-out) var(--reveal-delay, 0s),
+      translate 0.85s var(--ease-out) var(--reveal-delay, 0s);
     will-change: transform;
   }
 
   .service:hover {
-    box-shadow: 8px 8px 0 0 var(--ink);
-  }
-
-  /* Фигура-маркер вращается/крутится при наведении на карточку. */
-  .service__shape {
-    display: block;
-    margin-bottom: 1.2rem;
-    transition: rotate 0.6s var(--ease-out), scale 0.3s ease;
-  }
-
-  .service__shape--circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--red);
-  }
-
-  .service__shape--square {
-    width: 38px;
-    height: 38px;
-    background: var(--yellow);
-  }
-
-  .service__shape--triangle {
-    width: 0;
-    height: 0;
-    border-left: 22px solid transparent;
-    border-right: 22px solid transparent;
-    border-bottom: 38px solid var(--blue);
-    background: none;
-  }
-
-  .service:hover .service__shape {
-    rotate: 180deg;
-    scale: 1.12;
+    border-color: var(--brass);
+    box-shadow: var(--shadow-soft);
   }
 
   .service__num {
-    position: absolute;
-    top: 1.2rem;
-    right: 1.4rem;
     font-family: var(--font-display);
-    font-size: 0.78rem;
-    color: var(--ink-3);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 2.3rem;
+    line-height: 1;
+    color: var(--blush);
+    margin-bottom: 1.1rem;
+    transition: color 0.4s var(--ease-out);
+  }
+
+  .service:hover .service__num {
+    color: var(--brass-2);
+  }
+
+  /* Латунный ромб проворачивается при наведении. */
+  .service__gem {
+    position: absolute;
+    top: 2.2rem;
+    right: 1.7rem;
+    width: 8px;
+    height: 8px;
+    background: var(--brass);
+    rotate: 45deg;
+    transition: rotate 0.6s var(--ease-out), scale 0.4s ease;
+  }
+
+  .service:hover .service__gem {
+    rotate: 225deg;
+    scale: 1.25;
   }
 
   .service__title {
@@ -164,7 +153,7 @@ const shapeKinds = ['circle', 'square', 'triangle'] as const;
     list-style: none;
     margin: auto 0 0;
     padding: 1.1rem 0 0;
-    border-top: 2px solid var(--ink);
+    border-top: 1px solid var(--hairline);
     display: grid;
     gap: 0.45rem;
     font-size: 0.86rem;
@@ -180,10 +169,10 @@ const shapeKinds = ['circle', 'square', 'triangle'] as const;
     content: '';
     position: absolute;
     left: 0;
-    top: 0.52em;
-    width: 8px;
-    height: 8px;
-    background: var(--red);
+    top: 0.55em;
+    width: 6px;
+    height: 6px;
+    background: var(--brass);
     rotate: 45deg;
   }
 </style>

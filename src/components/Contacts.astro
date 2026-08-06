@@ -1,15 +1,13 @@
 ---
+import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
 ---
 
 <section class="section contacts" id="contacts">
-  <div class="shapes" aria-hidden="true">
-    <span class="shape shape--ring c-sh1" data-depth="0.22"></span>
-    <span
-      class="shape shape--circle c-sh2"
-      data-depth="0.45"
-      style="background: var(--yellow)"></span>
-    <span class="shape c-sh3" data-depth="0.3"></span>
+  <div class="decor" aria-hidden="true">
+    <LuxObject name="pendant" class="c-obj c-obj--pendant sway" depth={0.25} />
+    <LuxObject name="chair" class="c-obj c-obj--chair rock" depth={0.4} />
+    <LuxObject name="key" class="c-obj c-obj--key sway-slow" depth={0.3} />
   </div>
 
   <div class="wrap contacts__inner">
@@ -21,7 +19,7 @@ import { site } from '../content/site';
 
     <div class="contacts__actions reveal" style="--reveal-delay: 0.18s">
       <a
-        class="btn contacts__btn-light"
+        class="btn contacts__btn-brass"
         href={site.contacts.whatsappHref}
         target="_blank"
         rel="noopener"
@@ -47,32 +45,28 @@ import { site } from '../content/site';
     text-align: center;
   }
 
-  .c-sh1 {
-    width: 420px;
-    height: 420px;
-    border: 2px dashed rgba(244, 239, 230, 0.35);
-    top: -160px;
-    left: -130px;
-    animation: spin 52s linear infinite;
+  :global(.c-obj) {
+    color: var(--brass-2);
+    opacity: 0.85;
   }
 
-  .c-sh2 {
-    width: 50px;
-    height: 50px;
-    bottom: 18%;
-    right: 10%;
-    animation: bob 6s ease-in-out infinite;
+  :global(.c-obj--pendant) {
+    width: 62px;
+    top: -6px;
+    left: 10%;
   }
 
-  .c-sh3 {
-    width: 0;
-    height: 0;
-    border-left: 60px solid transparent;
-    border-right: 60px solid transparent;
-    border-bottom: 100px solid var(--red);
-    top: 12%;
-    right: -26px;
-    animation: drift 17s ease-in-out infinite;
+  :global(.c-obj--chair) {
+    width: 66px;
+    bottom: 9%;
+    right: 6%;
+    opacity: 0.55;
+  }
+
+  :global(.c-obj--key) {
+    width: 30px;
+    top: 24%;
+    right: 14%;
   }
 
   .contacts__inner {
@@ -80,14 +74,16 @@ import { site } from '../content/site';
   }
 
   .contacts .eyebrow {
-    background: transparent;
-    color: var(--paper);
-    border-color: var(--paper);
+    color: var(--brass-2);
+  }
+
+  .contacts .eyebrow::before {
+    background: var(--brass-2);
   }
 
   .contacts__lede {
     margin: 1.5rem auto 0;
-    color: #c9c3b7;
+    color: #c8c0b2;
     max-width: 52ch;
     font-size: clamp(1rem, 0.97rem + 0.3vw, 1.12rem);
   }
@@ -97,36 +93,41 @@ import { site } from '../content/site';
     flex-wrap: wrap;
     justify-content: center;
     gap: 1.2rem;
-    margin-top: 2.5rem;
+    margin-top: 2.6rem;
   }
 
-  .contacts__btn-light {
-    background: var(--yellow);
-    border-color: var(--yellow);
+  /* Латунная кнопка — главный акцент тёмной секции. */
+  .contacts__btn-brass {
+    background: linear-gradient(135deg, var(--brass-2), var(--brass));
+    border-color: transparent;
     color: var(--ink);
-    box-shadow: 4px 4px 0 0 var(--red);
   }
 
-  .contacts__btn-light:hover,
-  .contacts__btn-light:focus-visible {
-    box-shadow: 7px 7px 0 0 var(--red);
+  .contacts__btn-brass:hover,
+  .contacts__btn-brass:focus-visible {
+    background: linear-gradient(135deg, var(--brass-2), var(--brass));
+    filter: brightness(1.12);
+    border-color: transparent;
+    color: var(--ink);
   }
 
   .contacts__btn-outline {
     background: transparent;
-    border-color: var(--paper);
+    border-color: rgba(255, 255, 255, 0.4);
     color: var(--paper);
-    box-shadow: 4px 4px 0 0 var(--blue);
   }
 
   .contacts__btn-outline:hover,
   .contacts__btn-outline:focus-visible {
-    box-shadow: 7px 7px 0 0 var(--blue);
+    background: transparent;
+    border-color: var(--brass-2);
+    color: var(--brass-2);
+    box-shadow: none;
   }
 
   .contacts__meta {
     margin-top: 2.25rem;
     font-size: 0.85rem;
-    color: #8f887b;
+    color: #8f8778;
   }
 </style>
