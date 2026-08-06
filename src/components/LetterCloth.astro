@@ -191,14 +191,11 @@
     const ctx = c.getContext('2d')!;
 
     // Пре-рендер каждой буквы в свой маленький canvas — рисовать
-    // картинку сильно дешевле, чем текст с поворотом. Буквы рендерятся
-    // в четырёх цветах: вертикальные «нити» получают цветные полосы,
-    // как в плетении ткани.
+    // картинку сильно дешевле, чем текст с поворотом. STRIPE задаёт
+    // цвета вертикальных «нитей»; сейчас полотно монохромное —
+    // заказчику чёрные буквы нравятся больше цветных.
     const INK = '#17150f';
-    const STRIPE = [
-      INK, INK, INK, '#e2452d', INK, INK, INK, INK,
-      '#f0b428', INK, INK, INK, '#2957a4', INK,
-    ];
+    const STRIPE = [INK];
     const charCanvases: Record<string, HTMLCanvasElement> = {};
     const fontSize = Math.max(11, cfg.cellHeight * 1.1);
     for (const ch of new Set(TEXT)) {
