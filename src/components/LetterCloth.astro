@@ -26,7 +26,34 @@
       </p>
     </header>
   </div>
-  <div class="cloth__stage" id="cloth-stage"></div>
+  <div class="cloth__frame">
+    <!-- Чёрная крыша храмов мира, из-под которой свисает полотно:
+         луковичный купол, готический собор, мечеть с минаретами,
+         пагода, ступа. Ширину подгоняет скрипт под ширину полотна. -->
+    <div class="cloth__roof" id="cloth-roof" aria-hidden="true">
+      <svg viewBox="0 0 800 84" preserveAspectRatio="none">
+        <path
+          fill="currentColor"
+          d="M0 84 L0 62 L84 62
+             L84 40 L96 40 L96 28 L100 28
+             C100 12 122 12 122 28 L126 28 L126 40 L138 40 L138 62
+             L172 62 L172 20 L182 4 L192 20 L192 44 L228 44 L228 20
+             L238 4 L248 20 L248 62
+             L292 62 L292 58 L306 58
+             L310 10 L314 58 L330 58
+             C330 30 390 30 390 58 L406 58 L410 10 L414 58 L428 58
+             L428 62 L470 62
+             L470 56 L482 56 L478 46 L456 50 L484 38 L476 40 L488 28
+             L504 28 L516 40 L508 38 L536 50 L514 46 L510 56 L522 56
+             L522 62 L560 62
+             L560 58 C560 36 616 36 616 58 L616 62
+             L664 62 L664 46 L676 46 L676 36 L688 24 L700 36 L700 46
+             L712 46 L712 62 L800 62 L800 84 Z"
+        />
+      </svg>
+    </div>
+    <div class="cloth__stage" id="cloth-stage"></div>
+  </div>
 </section>
 
 <script>
@@ -183,12 +210,20 @@
     cfg.cellWidth = cfg.awidth / (cfg.gridW - 1);
     cfg.cellHeight = cfg.aheight / (cfg.gridH - 1);
 
+    const roofH = small ? 52 : 72;
     const c = document.createElement('canvas');
     c.width = stageW;
-    c.height = stageH;
+    c.height = stageH + roofH;
     stage.innerHTML = '';
     stage.appendChild(c);
     const ctx = c.getContext('2d')!;
+
+    // Крыша храмов: та же ширина, что у полотна, по центру сцены.
+    const roof = document.getElementById('cloth-roof');
+    if (roof) {
+      roof.style.width = `${w + 24}px`;
+      roof.style.height = `${roofH}px`;
+    }
 
     // Пре-рендер каждой буквы в свой маленький canvas — рисовать
     // картинку сильно дешевле, чем текст с поворотом. STRIPE задаёт
@@ -246,9 +281,10 @@
       }
     }
 
+    // Полотно свисает из-под карниза крыши.
     const offset = [
       (c.width - cfg.awidth) / 2,
-      (c.height - cfg.aheight) / 2 - 20,
+      roofH + 4,
     ];
 
     // --- мышь/палец: толкает полотно, может схватить точку ---
@@ -404,6 +440,26 @@
 
   .cloth__head h2 {
     margin-bottom: 1.25rem;
+  }
+
+  .cloth__frame {
+    position: relative;
+  }
+
+  .cloth__roof {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    translate: -50% 0;
+    color: var(--ink);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .cloth__roof svg {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 
   .cloth__stage {
