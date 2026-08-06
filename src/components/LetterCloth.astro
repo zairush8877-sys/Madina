@@ -15,13 +15,14 @@
 <section class="section cloth-section" id="cloth">
   <div class="wrap">
     <header class="cloth__head">
-      <p class="eyebrow reveal">Интерактив</p>
+      <p class="eyebrow reveal">Текстиль</p>
       <h2 class="reveal" style="--reveal-delay: 0.06s">
-        Потяните за <span class="accent-red">нити</span>
+        Интерьер начинается<br />с <span class="accent-red">ткани</span>
       </h2>
       <p class="lede reveal" style="--reveal-delay: 0.12s">
-        Полотно соткано из букв — поводите по нему мышкой или схватите
-        и потяните. Как ткань в руках декоратора.
+        Подбор тканей — любимая часть моей работы: лён, бархат, твид,
+        рогожка. Пощупайте полотно — поводите по нему мышкой, схватите
+        и потяните. Оно соткано из того, из чего складывается интерьер.
       </p>
     </header>
   </div>
@@ -30,9 +31,9 @@
 
 <script>
   const TEXT =
-    'МАДИНА ДЖАПУЕВА · ДИЗАЙНЕР ИНТЕРЬЕРОВ · НАЛЬЧИК · ПРОЕКТ · КОМПЛЕКТАЦИЯ · ' +
-    'НАДЗОР · ABCDE · ΑΒΓΔ · あいうえ · 한글 · 漢字 · ' +
-    'УЮТ · СВЕТ · ЦВЕТ · ФОРМА · ЭРГОНОМИКА · ';
+    'ЛЁН · БАРХАТ · ТВИД · ШЁЛК · ВЕЛЮР · РОГОЖКА · ШЕНИЛЛ · БУКЛЕ · ' +
+    'ФАКТУРА · ПАЛИТРА · СВЕТ · ЦВЕТ · УЮТ · ФОРМА · ЭРГОНОМИКА · ' +
+    'МАДИНА ДЖАПУЕВА · ТЕКСТИЛЬ · КОМПЛЕКТАЦИЯ · ';
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const stage = document.getElementById('cloth-stage')!;
@@ -87,6 +88,7 @@
     pinned: boolean;
     originalPinned: boolean;
     char: string;
+    color = '#17150f';
     downConstraint: Constraint | null = null;
     constructor(x: number, y: number, pinned: boolean, char: string) {
       this.pos = new Vec2(x, y);
@@ -189,36 +191,46 @@
     const ctx = c.getContext('2d')!;
 
     // Пре-рендер каждой буквы в свой маленький canvas — рисовать
-    // картинку сильно дешевле, чем текст с поворотом.
+    // картинку сильно дешевле, чем текст с поворотом. Буквы рендерятся
+    // в четырёх цветах: вертикальные «нити» получают цветные полосы,
+    // как в плетении ткани.
+    const INK = '#17150f';
+    const STRIPE = [
+      INK, INK, INK, '#e2452d', INK, INK, INK, INK,
+      '#f0b428', INK, INK, INK, '#2957a4', INK,
+    ];
     const charCanvases: Record<string, HTMLCanvasElement> = {};
     const fontSize = Math.max(11, cfg.cellHeight * 1.1);
     for (const ch of new Set(TEXT)) {
       if (ch === ' ') continue;
-      const off = document.createElement('canvas');
-      off.width = off.height = Math.ceil(fontSize * 1.6);
-      const octx = off.getContext('2d')!;
-      octx.font = `bold ${fontSize}px monospace`;
-      octx.textAlign = 'center';
-      octx.textBaseline = 'middle';
-      octx.fillStyle = '#17150f';
-      octx.fillText(ch, off.width / 2, off.height / 2);
-      charCanvases[ch] = off;
+      for (const color of new Set(STRIPE)) {
+        const off = document.createElement('canvas');
+        off.width = off.height = Math.ceil(fontSize * 1.6);
+        const octx = off.getContext('2d')!;
+        octx.font = `bold ${fontSize}px monospace`;
+        octx.textAlign = 'center';
+        octx.textBaseline = 'middle';
+        octx.fillStyle = color;
+        octx.fillText(ch, off.width / 2, off.height / 2);
+        charCanvases[`${ch}|${color}`] = off;
+      }
     }
 
     const particles: Particle[] = [];
     const constraints: Constraint[] = [];
     for (let i = 0; i < cfg.gridW; i++) {
+      const threadColor = STRIPE[i % STRIPE.length];
       for (let j = 0; j < cfg.gridH; j++) {
         const pinned = j === 0;
         const charIndex = (i + j * cfg.gridW) % TEXT.length;
-        particles.push(
-          new Particle(
-            i * cfg.cellWidth,
-            j * cfg.cellHeight,
-            pinned,
-            TEXT[charIndex] || ' ',
-          ),
+        const particle = new Particle(
+          i * cfg.cellWidth,
+          j * cfg.cellHeight,
+          pinned,
+          TEXT[charIndex] || ' ',
         );
+        particle.color = threadColor;
+        particles.push(particle);
       }
     }
     for (let i = 0; i < cfg.gridW; i++) {
@@ -297,7 +309,7 @@
       ctx.clearRect(0, 0, c.width, c.height);
       for (const p of particles) {
         if (!p.char || p.char === ' ') continue;
-        const img = charCanvases[p.char];
+        const img = charCanvases[`${p.char}|${p.color}`];
         if (!img) continue;
         const half = img.width / 2;
         let cos = 1;
