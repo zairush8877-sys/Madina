@@ -1,7 +1,6 @@
 ---
 import { Picture } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
 import dripTable from '../assets/photos/lux-drip-table.jpg';
 import handleFigures from '../assets/photos/lux-handle-figures.jpg';
@@ -22,11 +21,6 @@ const photos: Record<string, ImageMetadata> = {
 ---
 
 <section class="section details-section" id="details">
-  <div class="decor" aria-hidden="true">
-    <LuxObject name="key" class="det-obj det-obj--key sway" depth={0.35} />
-    <LuxObject name="chair" class="det-obj det-obj--chair rock" depth={0.2} />
-  </div>
-
   <div class="wrap">
     <header class="details__head">
       <p class="eyebrow reveal">{site.details.eyebrow}</p>
@@ -66,19 +60,6 @@ const photos: Record<string, ImageMetadata> = {
 <style>
   .details-section {
     overflow: hidden;
-  }
-
-  :global(.det-obj--key) {
-    width: 30px;
-    top: 7%;
-    left: 4%;
-  }
-
-  :global(.det-obj--chair) {
-    width: 64px;
-    bottom: 4%;
-    right: 4%;
-    color: var(--ink-3);
   }
 
   .details__head {

@@ -1,15 +1,8 @@
 ---
-import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
 ---
 
 <section class="section contacts" id="contacts">
-  <div class="decor" aria-hidden="true">
-    <LuxObject name="pendant" class="c-obj c-obj--pendant sway" depth={0.25} />
-    <LuxObject name="chair" class="c-obj c-obj--chair rock" depth={0.4} />
-    <LuxObject name="key" class="c-obj c-obj--key sway-slow" depth={0.3} />
-  </div>
-
   <div class="wrap contacts__inner">
     <p class="eyebrow reveal">{site.contacts.eyebrow}</p>
     <h2 class="reveal" style="--reveal-delay: 0.06s">{site.contacts.title}</h2>
@@ -43,30 +36,6 @@ import { site } from '../content/site';
     color: var(--paper);
     overflow: hidden;
     text-align: center;
-  }
-
-  :global(.c-obj) {
-    color: var(--brass-2);
-    opacity: 0.85;
-  }
-
-  :global(.c-obj--pendant) {
-    width: 62px;
-    top: -6px;
-    left: 10%;
-  }
-
-  :global(.c-obj--chair) {
-    width: 66px;
-    bottom: 9%;
-    right: 6%;
-    opacity: 0.55;
-  }
-
-  :global(.c-obj--key) {
-    width: 30px;
-    top: 24%;
-    right: 14%;
   }
 
   .contacts__inner {
