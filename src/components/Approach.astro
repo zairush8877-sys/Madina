@@ -1,14 +1,8 @@
 ---
-import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
 ---
 
 <section class="section approach-section" id="approach">
-  <div class="decor" aria-hidden="true">
-    <LuxObject name="pendant" class="app-obj app-obj--pendant sway-slow" depth={0.25} />
-    <LuxObject name="mirror" class="app-obj app-obj--mirror floaty" depth={0.15} />
-  </div>
-
   <div class="wrap">
     <header class="approach__head">
       <p class="eyebrow reveal">{site.approach.eyebrow}</p>
@@ -41,20 +35,6 @@ import { site } from '../content/site';
     background: var(--paper-2);
     border-block: 1px solid var(--hairline);
     overflow: hidden;
-  }
-
-  :global(.app-obj--pendant) {
-    width: 56px;
-    top: -4px;
-    right: 9%;
-  }
-
-  :global(.app-obj--mirror) {
-    width: 92px;
-    bottom: -30px;
-    left: 3%;
-    color: var(--ink-3);
-    opacity: 0.6;
   }
 
   .approach__head {

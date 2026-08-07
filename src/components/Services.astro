@@ -1,14 +1,8 @@
 ---
-import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
 ---
 
 <section class="section services-section" id="services">
-  <div class="decor" aria-hidden="true">
-    <LuxObject name="key" class="svc-obj svc-obj--key sway" depth={0.3} />
-    <LuxObject name="lever" class="svc-obj svc-obj--lever floaty" depth={0.45} />
-  </div>
-
   <div class="wrap">
     <header class="services__head">
       <p class="eyebrow reveal">Услуги</p>
@@ -50,19 +44,6 @@ import { site } from '../content/site';
 <style>
   .services-section {
     overflow: hidden;
-  }
-
-  :global(.svc-obj--key) {
-    width: 34px;
-    top: 9%;
-    right: 5%;
-  }
-
-  :global(.svc-obj--lever) {
-    width: 88px;
-    bottom: 6%;
-    left: -12px;
-    color: var(--ink-3);
   }
 
   .services__head {

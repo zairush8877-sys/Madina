@@ -1,5 +1,4 @@
 ---
-import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
 import { withBase } from '../lib/url';
 
@@ -10,11 +9,6 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
 ---
 
 <section class="section video-section" id="video">
-  <div class="decor" aria-hidden="true">
-    <LuxObject name="floorlamp" class="vid-obj vid-obj--lamp bobbing" depth={0.3} />
-    <LuxObject name="key" class="vid-obj vid-obj--key sway-slow" depth={0.2} />
-  </div>
-
   <div class="wrap video__inner">
     <div class="video__text">
       <p class="eyebrow reveal">{site.video.eyebrow}</p>
@@ -28,10 +22,8 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
       }
     </div>
 
-    <!-- Ролик снят вертикально (9:16) — плеер узкий, как экран телефона.
-         Над ним покачивается подвесной светильник. -->
+    <!-- Ролик снят вертикально (9:16) — плеер узкий, как экран телефона. -->
     <div class="video__frame reveal" style="--reveal-delay: 0.1s">
-      <LuxObject name="pendant" class="video__pendant sway" />
       <video
         class="video__player"
         src={videoSrc}
@@ -49,19 +41,6 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
 <style>
   .video-section {
     overflow: hidden;
-  }
-
-  :global(.vid-obj--lamp) {
-    width: 78px;
-    top: 14%;
-    left: 4%;
-    color: var(--ink-3);
-  }
-
-  :global(.vid-obj--key) {
-    width: 28px;
-    bottom: 14%;
-    left: 12%;
   }
 
   .video__inner {
@@ -83,12 +62,6 @@ const posterSrc = site.video.poster ? withBase(site.video.poster) : undefined;
     justify-self: center;
     width: 100%;
     max-width: 19rem;
-  }
-
-  :global(.video__pendant) {
-    width: 58px;
-    top: -74px;
-    left: calc(50% - 29px);
   }
 
   /* Паспарту: белое поле вокруг вертикального плеера. */

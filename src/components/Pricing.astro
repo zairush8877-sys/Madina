@@ -1,14 +1,8 @@
 ---
-import LuxObject from './LuxObject.astro';
 import { site } from '../content/site';
 ---
 
 <section class="section pricing-section" id="pricing">
-  <div class="decor" aria-hidden="true">
-    <LuxObject name="vase" class="pr-obj pr-obj--vase floaty" depth={0.35} />
-    <LuxObject name="pendant" class="pr-obj pr-obj--pendant sway" depth={0.2} />
-  </div>
-
   <div class="wrap">
     <header class="pricing__head">
       <p class="eyebrow reveal">{site.pricing.eyebrow}</p>
@@ -54,19 +48,6 @@ import { site } from '../content/site';
     background: var(--paper-2);
     border-block: 1px solid var(--hairline);
     overflow: hidden;
-  }
-
-  :global(.pr-obj--vase) {
-    width: 50px;
-    top: 10%;
-    right: 5%;
-  }
-
-  :global(.pr-obj--pendant) {
-    width: 54px;
-    top: -4px;
-    left: 6%;
-    color: var(--ink-3);
   }
 
   .pricing__head {
